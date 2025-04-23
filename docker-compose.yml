@@ -6,9 +6,9 @@ services:
       args:
         - NAME=presidio-anonymizer
     environment:
-      - PORT=5001
+      - PORT=5008
     ports:
-      - "5001:5001"
+      - "5008:5008"
   presidio-analyzer:
     image: ${REGISTRY_NAME}${IMAGE_PREFIX}presidio-analyzer${TAG}
     build:
@@ -16,9 +16,9 @@ services:
       args:
         - NAME=presidio-analyzer
     environment:
-      - PORT=5001
+      - PORT=5008
     ports:
-      - "5002:5001"
+      - "5002:5008"
   presidio-image-redactor:
     image: ${REGISTRY_NAME}${IMAGE_PREFIX}presidio-image-redactor${TAG}
     build:
@@ -28,4 +28,4 @@ services:
     environment:
       - PORT=5001
     ports:
-      - "5003:5001"
+      - "5003:5008"
