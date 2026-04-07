@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import EmailRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import EmailRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -19,11 +19,24 @@ def entities():
     [
         # fmt: off
         # valid email addresses
-        ("info@presidio.site", 1, ((0, 18),),),
-        ("my email address is info@presidio.site", 1, ((20, 38),),),
-        ("try one of these emails: info@presidio.site or anotherinfo@presidio.site",
+        (
+            "info@presidio.site",
+            1,
+            ((0, 18),),
+        ),
+        (
+            "my email address is info@presidio.site",
+            1,
+            ((20, 38),),
+        ),
+        (
+            "try one of these emails: info@presidio.site or anotherinfo@presidio.site",
             2,
-         ((25, 43), (47, 72),),),
+            (
+                (25, 43),
+                (47, 72),
+            ),
+        ),
         # invalid email address
         ("my email is info@presidio.", 0, ()),
         # fmt: on

@@ -1,7 +1,7 @@
 def test_readme():
     # Tests that the readme code snippet doesn't fail
     from presidio_anonymizer import AnonymizerEngine
-    from presidio_anonymizer.entities import RecognizerResult, OperatorConfig
+    from presidio_anonymizer.entities import OperatorConfig, RecognizerResult
 
     # Initialize the engine with logger.
     engine = AnonymizerEngine()
@@ -23,7 +23,7 @@ def test_readme():
 
 def test_readme_decrypt():
     from presidio_anonymizer import DeanonymizeEngine
-    from presidio_anonymizer.entities import OperatorResult, OperatorConfig
+    from presidio_anonymizer.entities import OperatorConfig, OperatorResult
 
     # Initialize the engine with logger.
     engine = DeanonymizeEngine()

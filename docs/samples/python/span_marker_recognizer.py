@@ -1,10 +1,10 @@
 import logging
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
 
 from presidio_analyzer import (
-    RecognizerResult,
-    EntityRecognizer,
     AnalysisExplanation,
+    EntityRecognizer,
+    RecognizerResult,
 )
 from presidio_analyzer.nlp_engine import NlpArtifacts
 
@@ -79,11 +79,7 @@ class SpanMarkerRecognizer(EntityRecognizer):
         presidio_equivalences: Optional[Dict[str, str]] = None,
         ignore_labels: Optional[List[str]] = None,
     ):
-        self.model = (
-            model
-            if model
-            else self.DEFAULT_MODEL
-        )
+        self.model = model if model else self.DEFAULT_MODEL
 
         self.presidio_equivalences = (
             presidio_equivalences
@@ -91,18 +87,13 @@ class SpanMarkerRecognizer(EntityRecognizer):
             else self.PRESIDIO_EQUIVALENCES
         )
 
-        supported_entities = (
-            supported_entities if supported_entities else self.ENTITIES
-        )
+        supported_entities = supported_entities if supported_entities else self.ENTITIES
 
-        self.ignore_labels = (
-            ignore_labels if ignore_labels else self.IGNORE_LABELS
-        )
+        self.ignore_labels = ignore_labels if ignore_labels else self.IGNORE_LABELS
 
         labels = list(self.presidio_equivalences.keys())
         self.span_marker_model = SpanMarkerModel.from_pretrained(
-            self.model,
-            labels=labels
+            self.model, labels=labels
         )
 
         super().__init__(
@@ -141,15 +132,11 @@ class SpanMarkerRecognizer(EntityRecognizer):
         ner_res = self.span_marker_model.predict(text)
 
         for res in ner_res:
-            if not self.__check_label(
-                res['label']
-            ):
+            if not self.__check_label(res["label"]):
                 continue
-            textual_explanation = self.DEFAULT_EXPLANATION.format(
-                res['label']
-            )
+            textual_explanation = self.DEFAULT_EXPLANATION.format(res["label"])
             explanation = self.build_span_marker_explanation(
-                round(res['score'], 2), textual_explanation
+                round(res["score"], 2), textual_explanation
             )
             span_marker_result = self._convert_to_recognizer_result(res, explanation)
             results.append(span_marker_result)
@@ -158,13 +145,13 @@ class SpanMarkerRecognizer(EntityRecognizer):
 
     def _convert_to_recognizer_result(self, entity, explanation) -> RecognizerResult:
 
-        entity_type = self.presidio_equivalences.get(entity['label'], entity['label'])
-        span_marker_score = round(entity['score'], 2)
+        entity_type = self.presidio_equivalences.get(entity["label"], entity["label"])
+        span_marker_score = round(entity["score"], 2)
 
         span_marker_results = RecognizerResult(
             entity_type=entity_type,
-            start=entity['char_start_index'],
-            end=entity['char_end_index'],
+            start=entity["char_start_index"],
+            end=entity["char_end_index"],
             score=span_marker_score,
             analysis_explanation=explanation,
         )
@@ -188,9 +175,7 @@ class SpanMarkerRecognizer(EntityRecognizer):
         )
         return explanation
 
-    def __check_label(
-        self, label: str
-    ) -> bool:
+    def __check_label(self, label: str) -> bool:
         entity = self.presidio_equivalences.get(label, None)
 
         if entity in self.ignore_labels:
@@ -207,12 +192,9 @@ class SpanMarkerRecognizer(EntityRecognizer):
 
 
 if __name__ == "__main__":
-
     from presidio_analyzer import AnalyzerEngine, RecognizerRegistry
 
-    span_marker_recognizer = (
-        SpanMarkerRecognizer()
-    )
+    span_marker_recognizer = SpanMarkerRecognizer()
 
     registry = RecognizerRegistry()
     registry.add_recognizer(span_marker_recognizer)

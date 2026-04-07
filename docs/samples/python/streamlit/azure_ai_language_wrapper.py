@@ -1,11 +1,11 @@
+import logging
 import os
 from typing import List, Optional
-import logging
+
 import dotenv
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
-
-from presidio_analyzer import EntityRecognizer, RecognizerResult, AnalysisExplanation
+from presidio_analyzer import AnalysisExplanation, EntityRecognizer, RecognizerResult
 from presidio_analyzer.nlp_engine import NlpArtifacts
 
 logger = logging.getLogger("presidio-streamlit")
@@ -28,7 +28,7 @@ class AzureAIServiceWrapper(EntityRecognizer):
         Wrapper for the Azure Text Analytics client
         :param ta_client: object of type TextAnalyticsClient
         :param ta_key: Azure cognitive Services for Language key
-        :param ta_endpoint: Azure cognitive Services for Language endpoint
+        :param ta_endpoint: Azure cognitive Services for Language endpoint.
         """
 
         if not supported_entities:
@@ -109,13 +109,13 @@ if __name__ == "__main__":
 
     Hello, my name is David Johnson and I live in Maine.
     My credit card number is 4095-2609-9393-4932 and my crypto wallet id is 16Yeky6GMjeNkAiNcBY7ZhrLoMSgg1BoyZ.
-    
+
     On September 18 I visited microsoft.com and sent an email to test@presidio.site,  from the IP 192.168.0.1.
-    
+
     My passport: 191280342 and my phone number: (212) 555-1234.
-    
+
     This is a valid International Bank Account Number: IL150120690000003111111 . Can you please check the status on bank account 954567876544?
-    
+
     Kate's social security number is 078-05-1126.  Her driver license? it is 1234567A.
     """
     analyzer = presidio_helpers.analyzer_engine(

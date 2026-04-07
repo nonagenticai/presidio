@@ -157,7 +157,7 @@ class PatternRecognizer(LocalRecognizer):
         :return: Analysis explanation
         """
         textual_explanation = (
-            f"Detected by `{recognizer_name}` " f"using pattern `{pattern_name}`"
+            f"Detected by `{recognizer_name}` using pattern `{pattern_name}`"
         )
 
         explanation = AnalysisExplanation(
@@ -198,7 +198,7 @@ class PatternRecognizer(LocalRecognizer):
             logger.debug(
                 "--- match_time[%s]: %.6f seconds",
                 pattern.name,
-                match_time.total_seconds()
+                match_time.total_seconds(),
             )
 
             for match in matches:

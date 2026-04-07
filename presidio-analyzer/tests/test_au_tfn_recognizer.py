@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import AuTfnRecognizer
 
 from tests import assert_result_within_score_range
-from presidio_analyzer.predefined_recognizers import AuTfnRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -17,17 +17,57 @@ def entities():
 @pytest.mark.parametrize(
     "text, expected_len, expected_positions, expected_score_ranges",
     [
-        # Valid formatting and valid TFNs 
-        ("876 543 210", 1, ((0, 11),), ((1.0, 1.0),), ),
-        ("876543210", 1, ((0, 9),), ((1.0, 1.0),), ),
-        # Valid formatting but invalid TFNs 
-        ("824 753 557", 0, (), (),),
-        ("824753557", 0, (), (),),
-        # Invalid formatting and TFNs.  
-        ("5282475355632", 0, (), (),),
-        ("52824753556AF", 0, (), (),),
-        ("51 824 753 5564", 0, (), (),),
-        ("123 456\n789", 0, (), (),),
+        # Valid formatting and valid TFNs
+        (
+            "876 543 210",
+            1,
+            ((0, 11),),
+            ((1.0, 1.0),),
+        ),
+        (
+            "876543210",
+            1,
+            ((0, 9),),
+            ((1.0, 1.0),),
+        ),
+        # Valid formatting but invalid TFNs
+        (
+            "824 753 557",
+            0,
+            (),
+            (),
+        ),
+        (
+            "824753557",
+            0,
+            (),
+            (),
+        ),
+        # Invalid formatting and TFNs.
+        (
+            "5282475355632",
+            0,
+            (),
+            (),
+        ),
+        (
+            "52824753556AF",
+            0,
+            (),
+            (),
+        ),
+        (
+            "51 824 753 5564",
+            0,
+            (),
+            (),
+        ),
+        (
+            "123 456\n789",
+            0,
+            (),
+            (),
+        ),
     ],
 )
 def test_when_all_tfns_then_succeed(

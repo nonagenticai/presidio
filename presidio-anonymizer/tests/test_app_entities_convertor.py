@@ -1,11 +1,10 @@
 from typing import List
 
 import pytest
-
 from presidio_anonymizer.entities import (
     InvalidParamError,
-    RecognizerResult,
     OperatorConfig,
+    RecognizerResult,
 )
 from presidio_anonymizer.services.app_entities_convertor import AppEntitiesConvertor
 
@@ -33,14 +32,15 @@ def test_given_valid_json_then_anonymizers_config_list_created_successfully():
     "request_json, result_text",
     [
         (
-                [
-                    {
-                        "end": 32,
-                        "score": 0.8,
-                    }
-                ]
-                , "Invalid input, result must contain start",),
-        (None, "Invalid input, request must contain analyzer results")
+            [
+                {
+                    "end": 32,
+                    "score": 0.8,
+                }
+            ],
+            "Invalid input, result must contain start",
+        ),
+        (None, "Invalid input, request must contain analyzer results"),
     ],
     # fmt: on
 )

@@ -1,6 +1,7 @@
 import os
-import pytest
 from io import StringIO
+
+import pytest
 from presidio_cli import cli
 
 

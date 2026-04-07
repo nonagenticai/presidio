@@ -2,8 +2,7 @@ import json
 from typing import Iterator
 
 import pytest
-
-from presidio_analyzer.nlp_engine import SpacyNlpEngine, NerModelConfiguration
+from presidio_analyzer.nlp_engine import NerModelConfiguration, SpacyNlpEngine
 
 
 class SetEncoder(json.JSONEncoder):
@@ -19,7 +18,6 @@ def test_simple_process_text(spacy_nlp_engine):
     assert not nlp_artifacts.entities
     assert nlp_artifacts.lemmas[0] == "simple"
     assert nlp_artifacts.lemmas[1] == "text"
-
 
 
 def test_process_batch_strings(spacy_nlp_engine):
@@ -71,10 +69,10 @@ def test_default_configuration_correct():
 
 
 def test_get_supported_entities_doesnt_include_ignored():
-    ner_config = NerModelConfiguration(labels_to_ignore=["A","B"],
-                                       model_to_presidio_entity_mapping=dict(A="A",
-                                                                             B="B",
-                                                                             C="C"))
+    ner_config = NerModelConfiguration(
+        labels_to_ignore=["A", "B"],
+        model_to_presidio_entity_mapping=dict(A="A", B="B", C="C"),
+    )
     spacy_nlp_engine = SpacyNlpEngine(ner_model_configuration=ner_config)
     entities = spacy_nlp_engine.get_supported_entities()
 

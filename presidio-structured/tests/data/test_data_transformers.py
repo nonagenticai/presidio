@@ -2,8 +2,8 @@ import pytest
 from pandas import DataFrame
 from presidio_structured.data.data_processors import (
     DataProcessorBase,
-    PandasDataProcessor,
     JsonDataProcessor,
+    PandasDataProcessor,
 )
 
 
@@ -24,7 +24,9 @@ class TestPandasDataProcessor:
             else:
                 assert all(result[key] == "DEFAULT_REPLACEMENT")
 
-    def test_process_no_default_should_raise(self, sample_df, operators_no_default, tabular_analysis):
+    def test_process_no_default_should_raise(
+        self, sample_df, operators_no_default, tabular_analysis
+    ):
         processor = PandasDataProcessor()
         with pytest.raises(ValueError):
             processor.operate(sample_df, tabular_analysis, operators_no_default)
@@ -50,7 +52,9 @@ class TestJsonDataProcessor:
             else:
                 assert nested_value == "DEFAULT_REPLACEMENT"
 
-    def test_process_no_default_should_raise(self, sample_json, operators_no_default, json_analysis):
+    def test_process_no_default_should_raise(
+        self, sample_json, operators_no_default, json_analysis
+    ):
         processor = JsonDataProcessor()
         with pytest.raises(ValueError):
             processor.operate(sample_json, json_analysis, operators_no_default)

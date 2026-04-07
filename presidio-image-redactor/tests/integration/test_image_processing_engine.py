@@ -1,17 +1,15 @@
-import PIL
-from PIL import Image
-import numpy as np
-import pytest
-from methods import get_resource_image
 from unittest import mock
 
-
+import numpy as np
+import PIL
+import pytest
+from methods import get_resource_image
+from PIL import Image
 from presidio_image_redactor import (
-    ImagePreprocessor,
-    ContrastSegmentedImageEnhancer,
     BilateralFilter,
-    SegmentedAdaptiveThreshold,
+    ContrastSegmentedImageEnhancer,
     ImageRescaling,
+    SegmentedAdaptiveThreshold,
 )
 
 

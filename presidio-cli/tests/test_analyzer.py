@@ -21,7 +21,7 @@ def test_line_generator():
     e = list(line_generator("\n\n"))
     assert len(e) == 3
 
-    e = list(line_generator("---\n" "this is line 1\n" "line 2\n" "\n" "3\n"))
+    e = list(line_generator("---\nthis is line 1\nline 2\n\n3\n"))
     assert len(e) == 6
     assert e[0].line_no == 1
     assert e[0].content == "---"
@@ -29,7 +29,7 @@ def test_line_generator():
     assert e[3].content == ""
     assert e[5].line_no == 6
 
-    e = list(line_generator("test with\n" "no newline\n" "at the end"))
+    e = list(line_generator("test with\nno newline\nat the end"))
     assert len(e) == 3
     assert e[2].line_no == 3
     assert e[2].content == "at the end"
@@ -49,9 +49,13 @@ def test_analyze(en_core_web_lg, config):
 
 
 def test_analyze_with_allow_list(en_core_web_lg, config, config_with_allow_list):
-    result_without_allow_list = list(analyze("John Sample\n" "example@example.com", config))
+    result_without_allow_list = list(
+        analyze("John Sample\nexample@example.com", config)
+    )
 
-    result_with_allow_list = list(analyze("John Sample\n" "example@example.com", config_with_allow_list))
+    result_with_allow_list = list(
+        analyze("John Sample\nexample@example.com", config_with_allow_list)
+    )
 
     assert len(result_without_allow_list) - len(result_with_allow_list) == 3
 

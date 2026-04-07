@@ -1,12 +1,9 @@
-"""Tests adapted from the spacy_stanza repo"""
+"""Tests adapted from the spacy_stanza repo."""
 
-from spacy.lang.en import EnglishDefaults, English
-
-
-import stanza
 import pytest
-
+import stanza
 from presidio_analyzer.nlp_engine.stanza_nlp_engine import load_pipeline
+from spacy.lang.en import EnglishDefaults
 
 
 def tags_equal(act, exp):
@@ -20,6 +17,7 @@ def stanza_pipeline():
     stanza.download(lang)
     nlp = load_pipeline(lang)
     return nlp
+
 
 @pytest.mark.skip_engine("stanza_en")
 def test_spacy_stanza_english(stanza_pipeline):

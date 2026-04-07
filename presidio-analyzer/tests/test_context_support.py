@@ -1,26 +1,24 @@
 import os
 
 import pytest
-
-from presidio_analyzer import PatternRecognizer, Pattern
+from presidio_analyzer import Pattern, PatternRecognizer
+from presidio_analyzer.context_aware_enhancers import LemmaContextAwareEnhancer
+from presidio_analyzer.nlp_engine import NlpArtifacts
 from presidio_analyzer.predefined_recognizers import (
     AbaRoutingRecognizer,
+    InPanRecognizer,
+    InPassportRecognizer,
+    IpRecognizer,
     # CreditCardRecognizer,
     PhoneRecognizer,
+    SgFinRecognizer,
+    UsBankRecognizer,
     # DomainRecognizer,
     UsItinRecognizer,
     UsLicenseRecognizer,
-    UsBankRecognizer,
     UsPassportRecognizer,
-    IpRecognizer,
     UsSsnRecognizer,
-    SgFinRecognizer,
-    InPanRecognizer,
-    InPassportRecognizer,
-
 )
-from presidio_analyzer.nlp_engine import NlpArtifacts
-from presidio_analyzer.context_aware_enhancers import LemmaContextAwareEnhancer
 
 
 @pytest.fixture(scope="module")
@@ -192,7 +190,9 @@ def test_when_text_with_context_then_improves_score(
                 assert res_wo.score <= res_w.score
 
 
-def test_when_context_custom_recognizer_then_succeed(spacy_nlp_engine, mock_nlp_artifacts):
+def test_when_context_custom_recognizer_then_succeed(
+    spacy_nlp_engine, mock_nlp_artifacts
+):
     """This test checks that a custom recognizer is also enhanced by context.
 
     However this test also verifies a specific case in which the pattern also

@@ -1,7 +1,6 @@
 import pytest
-
-from presidio_anonymizer.operators import Mask
 from presidio_anonymizer.entities import InvalidParamError
+from presidio_anonymizer.operators import Mask
 
 
 @pytest.mark.parametrize(
@@ -18,7 +17,13 @@ from presidio_anonymizer.entities import InvalidParamError
         ("t", "*", 1, True, "*"),  # from the end
         ("t", "*", 3, False, "*"),  # with overflowing chars_to_mask
         ("t", "*", 3, True, "*"),  # from the end
-        ("text", "😈", 4, False, "😈😈😈😈"),  # Mask with 'Unicode EmojiSources' character
+        (
+            "text",
+            "😈",
+            4,
+            False,
+            "😈😈😈😈",
+        ),  # Mask with 'Unicode EmojiSources' character
         ("😈😈😈😈", "*", 4, False, "****"),  # Mask 'Unicode EmojiSources' character
         ("text", "*", 0, False, "text"),  # Nullified mask
         ("text", "*", 0, True, "text"),  # from the end
@@ -26,7 +31,7 @@ from presidio_anonymizer.entities import InvalidParamError
         ("text", "*", -1, True, "text"),  # from the end
         ("", "*", 1, False, ""),  # Empty string
         ("", "*", 0, False, ""),  # Empty string nullified mask
-    ]
+    ],
     # fmt: on
 )
 def test_when_given_valid_value_then_expected_string_returned(

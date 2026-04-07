@@ -1,4 +1,4 @@
-from presidio_helpers import analyzer_engine, analyze, anonymize
+from presidio_helpers import analyze, analyzer_engine, anonymize
 
 
 def test_streamlit_logic():

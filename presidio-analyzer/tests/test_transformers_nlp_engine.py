@@ -1,5 +1,4 @@
 import pytest
-
 from presidio_analyzer.nlp_engine import TransformersNlpEngine
 
 

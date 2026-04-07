@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import UsBankRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import UsBankRecognizer
 
 
 @pytest.fixture(scope="module")

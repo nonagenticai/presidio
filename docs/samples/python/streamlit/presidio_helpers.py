@@ -1,31 +1,30 @@
-"""
-Helper methods for the Presidio Streamlit app
-"""
-from typing import List, Optional, Tuple
+"""Helper methods for the Presidio Streamlit app."""
+
 import logging
+from typing import List, Optional, Tuple
+
 import streamlit as st
+from openai_fake_data_generator import (
+    OpenAIParams,
+    call_completion_model,
+    create_prompt,
+)
 from presidio_analyzer import (
     AnalyzerEngine,
-    RecognizerResult,
-    RecognizerRegistry,
-    PatternRecognizer,
     Pattern,
+    PatternRecognizer,
+    RecognizerRegistry,
+    RecognizerResult,
 )
 from presidio_analyzer.nlp_engine import NlpEngine
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
-
-from openai_fake_data_generator import (
-    call_completion_model,
-    OpenAIParams,
-    create_prompt,
-)
 from presidio_nlp_engine_config import (
-    create_nlp_engine_with_spacy,
-    create_nlp_engine_with_flair,
-    create_nlp_engine_with_transformers,
     create_nlp_engine_with_azure_ai_language,
+    create_nlp_engine_with_flair,
+    create_nlp_engine_with_spacy,
     create_nlp_engine_with_stanza,
+    create_nlp_engine_with_transformers,
 )
 
 logger = logging.getLogger("presidio-streamlit")
@@ -45,7 +44,7 @@ def nlp_engine_and_registry(
         "obi/deid_roberta_i2b2",
         "en_core_web_lg"
     :param ta_key: Key to the Text Analytics endpoint (only if model_path = "Azure Text Analytics")
-    :param ta_endpoint: Endpoint of the Text Analytics instance (only if model_path = "Azure Text Analytics")
+    :param ta_endpoint: Endpoint of the Text Analytics instance (only if model_path = "Azure Text Analytics").
     """
 
     # Set up NLP Engine according to the model of choice
@@ -77,7 +76,7 @@ def analyzer_engine(
         "obi/deid_roberta_i2b2",
         "en_core_web_lg"
     :param ta_key: Key to the Text Analytics endpoint (only if model_path = "Azure Text Analytics")
-    :param ta_endpoint: Endpoint of the Text Analytics instance (only if model_path = "Azure Text Analytics")
+    :param ta_endpoint: Endpoint of the Text Analytics instance (only if model_path = "Azure Text Analytics").
     """
     nlp_engine, registry = nlp_engine_and_registry(
         model_family, model_path, ta_key, ta_endpoint
@@ -176,7 +175,7 @@ def anonymize(
 
 
 def annotate(text: str, analyze_results: List[RecognizerResult]):
-    """Highlight the identified PII entities on the original text
+    """Highlight the identified PII entities on the original text.
 
     :param text: Full text
     :param analyze_results: list of results from presidio analyzer engine
@@ -213,7 +212,7 @@ def create_fake_data(
     analyze_results: List[RecognizerResult],
     openai_params: OpenAIParams,
 ):
-    """Creates a synthetic version of the text using OpenAI APIs"""
+    """Creates a synthetic version of the text using OpenAI APIs."""
     if not openai_params.openai_key:
         return "Please provide your OpenAI key"
     results = anonymize(text=text, operator="replace", analyze_results=analyze_results)

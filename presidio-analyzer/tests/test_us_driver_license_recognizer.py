@@ -1,6 +1,6 @@
 import pytest
-
 from presidio_analyzer.predefined_recognizers import UsLicenseRecognizer
+
 from tests import assert_result_within_score_range
 
 
@@ -18,19 +18,51 @@ def entities():
     "text, expected_len, expected_positions, expected_score_ranges",
     [
         # fmt: off
-        ("H12234567", 1, ((0, 9),), ((0.3, 0.4),),),
-        ("C12T345672", 0, (), (),),
+        (
+            "H12234567",
+            1,
+            ((0, 9),),
+            ((0.3, 0.4),),
+        ),
+        (
+            "C12T345672",
+            0,
+            (),
+            (),
+        ),
         # invalid license that should fail, but doesn't do to context
         # ("my driver's license is C12T345672", 0, (), (),),
         # Other states license very weak tests
         (
             "123456789 1234567890 12345679012 123456790123 1234567901234 1234",
             5,
-            ((0, 9), (10, 20), (21, 32), (33, 45), (46, 59),),
-            ((0.0, 0.02), (0.0, 0.02), (0.0, 0.02), (0.0, 0.02), (0.0, 0.02),),
+            (
+                (0, 9),
+                (10, 20),
+                (21, 32),
+                (33, 45),
+                (46, 59),
+            ),
+            (
+                (0.0, 0.02),
+                (0.0, 0.02),
+                (0.0, 0.02),
+                (0.0, 0.02),
+                (0.0, 0.02),
+            ),
         ),
-        ("ABCDEFG ABCDEFGH ABCDEFGHI", 0, (), (),),
-        ("ABCD ABCDEFGHIJ", 0, (), (),),
+        (
+            "ABCDEFG ABCDEFGH ABCDEFGHI",
+            0,
+            (),
+            (),
+        ),
+        (
+            "ABCD ABCDEFGHIJ",
+            0,
+            (),
+            (),
+        ),
         # The following fails due to keyphrases not yet supported
         # ("my driver license: ABCDEFG", 1, ((19, 25),), ((0.5, 0.91),),),
         # fmt: on

@@ -1,7 +1,6 @@
 import pytest
-
-from presidio_anonymizer.operators import Hash
 from presidio_anonymizer.entities import InvalidParamError
+from presidio_anonymizer.operators import Hash
 
 
 @pytest.mark.parametrize(

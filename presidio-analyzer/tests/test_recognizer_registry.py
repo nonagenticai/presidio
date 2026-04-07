@@ -2,13 +2,12 @@ from pathlib import Path
 
 import pytest
 import regex as re
-
 from presidio_analyzer import (
-    RecognizerRegistry,
-    PatternRecognizer,
+    AnalyzerEngine,
     EntityRecognizer,
     Pattern,
-    AnalyzerEngine,
+    PatternRecognizer,
+    RecognizerRegistry,
 )
 from presidio_analyzer.predefined_recognizers import SpacyRecognizer
 
@@ -241,6 +240,6 @@ def test_remove_recognizer_when_multiple_instances_exist():
     assert len(registry.recognizers) == 1
 
     assert registry.recognizers[0].supported_language == "es"
-    assert len([rec for rec in registry.recognizers
-                if rec.name == "SpacyRecognizer"]) == 1
-
+    assert (
+        len([rec for rec in registry.recognizers if rec.name == "SpacyRecognizer"]) == 1
+    )

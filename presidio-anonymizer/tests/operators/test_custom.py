@@ -1,7 +1,6 @@
 import pytest
-
-from presidio_anonymizer.operators import Custom
 from presidio_anonymizer.entities import InvalidParamError
+from presidio_anonymizer.operators import Custom
 
 
 def test_given_non_callable_for_custom_then_ipe_raised():

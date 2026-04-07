@@ -3,17 +3,20 @@ from pathlib import Path
 from typing import Dict, List
 
 import pytest
-
 from presidio_analyzer import (
+    AnalyzerEngine,
     EntityRecognizer,
     Pattern,
     PatternRecognizer,
-    AnalyzerEngine,
+    RecognizerRegistry,
 )
-from presidio_analyzer import RecognizerRegistry
-from presidio_analyzer.nlp_engine import NlpEngineProvider, NlpEngine
-from presidio_analyzer.predefined_recognizers import NLP_RECOGNIZERS, PREDEFINED_RECOGNIZERS
-from tests.mocks import RecognizerRegistryMock, NlpEngineMock
+from presidio_analyzer.nlp_engine import NlpEngine, NlpEngineProvider
+from presidio_analyzer.predefined_recognizers import (
+    NLP_RECOGNIZERS,
+    PREDEFINED_RECOGNIZERS,
+)
+
+from tests.mocks import NlpEngineMock, RecognizerRegistryMock
 
 
 def pytest_configure(config):

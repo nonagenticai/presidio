@@ -1,5 +1,4 @@
 import pytest
-
 from presidio_anonymizer.entities import InvalidParamError, RecognizerResult
 
 
@@ -70,10 +69,16 @@ def test_given_recognizer_results_with_different_indices_then_indices_are_not_eq
     # fmt: off
     "start, end, err",
     [
-        ("0", 10,
-         "Invalid parameter value for start. Expecting 'number', but got 'string'."),
-        (0, "10",
-         "Invalid parameter value for end. Expecting 'number', but got 'string'."),
+        (
+            "0",
+            10,
+            "Invalid parameter value for start. Expecting 'number', but got 'string'.",
+        ),
+        (
+            0,
+            "10",
+            "Invalid parameter value for end. Expecting 'number', but got 'string'.",
+        ),
     ],
     # fmt: on
 )
@@ -179,27 +184,30 @@ def test_given_recognizer_results_with_no_conflicting_indices_then_there_is_no_c
     # fmt: off
     "request_json, result_text",
     [
-        ({}, "Invalid input, result must contain start",),
-        ({
-             "end": 32,
-             "score": 0.8,
-             "entity_type": "NUMBER"
-         }, "Invalid input, result must contain start",),
-        ({
-             "start": 28,
-             "score": 0.8,
-             "entity_type": "NUMBER"
-         }, "Invalid input, result must contain end",),
-        ({
-             "start": 28,
-             "end": 32,
-             "entity_type": "NUMBER"
-         }, "Invalid input, analyzer result must contain score",),
-        ({
-             "start": 28,
-             "end": 32,
-             "score": 0.8,
-         }, "Invalid input, result must contain entity_type",),
+        (
+            {},
+            "Invalid input, result must contain start",
+        ),
+        (
+            {"end": 32, "score": 0.8, "entity_type": "NUMBER"},
+            "Invalid input, result must contain start",
+        ),
+        (
+            {"start": 28, "score": 0.8, "entity_type": "NUMBER"},
+            "Invalid input, result must contain end",
+        ),
+        (
+            {"start": 28, "end": 32, "entity_type": "NUMBER"},
+            "Invalid input, analyzer result must contain score",
+        ),
+        (
+            {
+                "start": 28,
+                "end": 32,
+                "score": 0.8,
+            },
+            "Invalid input, result must contain entity_type",
+        ),
     ],
     # fmt: on
 )

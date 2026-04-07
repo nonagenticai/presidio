@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import EsNifRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import EsNifRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -19,11 +19,31 @@ def entities():
     [
         # fmt: off
         # valid NIF scores
-        ("55555555K", 1, ((0, 9),),),
-        ("55555555-K", 1, ((0, 10),),),
-        ("1111111-G", 1, ((0, 9),),),
-        ("1111111G", 1, ((0, 8),),),
-        ("01111111G", 1, ((0, 9),),),
+        (
+            "55555555K",
+            1,
+            ((0, 9),),
+        ),
+        (
+            "55555555-K",
+            1,
+            ((0, 10),),
+        ),
+        (
+            "1111111-G",
+            1,
+            ((0, 9),),
+        ),
+        (
+            "1111111G",
+            1,
+            ((0, 8),),
+        ),
+        (
+            "01111111G",
+            1,
+            ((0, 9),),
+        ),
         # invalid NIF scores
         ("401-023-2138", 0, ()),
         # fmt: on

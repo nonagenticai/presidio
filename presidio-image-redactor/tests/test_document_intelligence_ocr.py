@@ -1,7 +1,8 @@
-import pytest
 from unittest import mock
-from presidio_image_redactor.document_intelligence_ocr import DocumentIntelligenceOCR
+
+import pytest
 from azure.ai.formrecognizer import AnalyzeResult
+from presidio_image_redactor.document_intelligence_ocr import DocumentIntelligenceOCR
 
 
 @pytest.fixture(scope="module")
@@ -13,16 +14,49 @@ def ocr_response(request):
     "ocr_response, expected",
     [
         # Base Case
-        ({"pages": [{"words": []}]}, {"left": [], "top": [], "width": [], "height": [], "conf": [], "text": []}),
+        (
+            {"pages": [{"words": []}]},
+            {"left": [], "top": [], "width": [], "height": [], "conf": [], "text": []},
+        ),
         # Polygon of sequence 0 are invalid
         (
-            {"pages": [{"words": [{"content": "Happy", "confidence": 3.14, "polygon": []}]}]},
-            {"left": [0], "top": [0], "width": [0], "height": [0], "conf": [3.14], "text": ["Happy"]},
+            {
+                "pages": [
+                    {"words": [{"content": "Happy", "confidence": 3.14, "polygon": []}]}
+                ]
+            },
+            {
+                "left": [0],
+                "top": [0],
+                "width": [0],
+                "height": [0],
+                "conf": [3.14],
+                "text": ["Happy"],
+            },
         ),
         # Polygon of sequence 1 are invalid
         (
-            {"pages": [{"words": [{"content": "Happy", "confidence": 3.14, "polygon": [{"x": 1, "y": 2}]}]}]},
-            {"left": [0], "top": [0], "width": [0], "height": [0], "conf": [3.14], "text": ["Happy"]},
+            {
+                "pages": [
+                    {
+                        "words": [
+                            {
+                                "content": "Happy",
+                                "confidence": 3.14,
+                                "polygon": [{"x": 1, "y": 2}],
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "left": [0],
+                "top": [0],
+                "width": [0],
+                "height": [0],
+                "conf": [3.14],
+                "text": ["Happy"],
+            },
         ),
         # Regular two point polygon
         (
@@ -30,12 +64,23 @@ def ocr_response(request):
                 "pages": [
                     {
                         "words": [
-                            {"content": "Happy", "confidence": 3.14, "polygon": [{"x": 1, "y": 2}, {"x": 3, "y": 42}]}
+                            {
+                                "content": "Happy",
+                                "confidence": 3.14,
+                                "polygon": [{"x": 1, "y": 2}, {"x": 3, "y": 42}],
+                            }
                         ]
                     }
                 ]
             },
-            {"left": [1], "top": [2], "width": [2], "height": [40], "conf": [3.14], "text": ["Happy"]},
+            {
+                "left": [1],
+                "top": [2],
+                "width": [2],
+                "height": [40],
+                "conf": [3.14],
+                "text": ["Happy"],
+            },
         ),
         # Order doesn't matter
         (
@@ -43,12 +88,23 @@ def ocr_response(request):
                 "pages": [
                     {
                         "words": [
-                            {"content": "Happy", "confidence": 3.14, "polygon": [{"x": 3, "y": 42}, {"x": 1, "y": 2}]}
+                            {
+                                "content": "Happy",
+                                "confidence": 3.14,
+                                "polygon": [{"x": 3, "y": 42}, {"x": 1, "y": 2}],
+                            }
                         ]
                     }
                 ]
             },
-            {"left": [1], "top": [2], "width": [2], "height": [40], "conf": [3.14], "text": ["Happy"]},
+            {
+                "left": [1],
+                "top": [2],
+                "width": [2],
+                "height": [40],
+                "conf": [3.14],
+                "text": ["Happy"],
+            },
         ),
         # Can specify other corners
         (
@@ -56,12 +112,23 @@ def ocr_response(request):
                 "pages": [
                     {
                         "words": [
-                            {"content": "Happy", "confidence": 3.14, "polygon": [{"x": 3, "y": 2}, {"x": 1, "y": 42}]}
+                            {
+                                "content": "Happy",
+                                "confidence": 3.14,
+                                "polygon": [{"x": 3, "y": 2}, {"x": 1, "y": 42}],
+                            }
                         ]
                     }
                 ]
             },
-            {"left": [1], "top": [2], "width": [2], "height": [40], "conf": [3.14], "text": ["Happy"]},
+            {
+                "left": [1],
+                "top": [2],
+                "width": [2],
+                "height": [40],
+                "conf": [3.14],
+                "text": ["Happy"],
+            },
         ),
     ],
     indirect=["ocr_response"],
@@ -83,7 +150,9 @@ def test_given_da_response_then_get_bboxes_matches(ocr_response, expected):
         ({"pages": [{"word": []}]})
     ],
 )
-def test_given_wrong_keys_in_response_then_parsing_fails_returns_exception(ocr_response):
+def test_given_wrong_keys_in_response_then_parsing_fails_returns_exception(
+    ocr_response,
+):
     """Test parsing failures.
 
     :param ocr_response: The OCR response from the Document Intelligence client
@@ -93,14 +162,18 @@ def test_given_wrong_keys_in_response_then_parsing_fails_returns_exception(ocr_r
 
 
 def test_model_id_wrong_then_raises_exception():
-    """Test an incorrect model raises an exception"""
+    """Test an incorrect model raises an exception."""
     with pytest.raises(ValueError):
-        DocumentIntelligenceOCR(key="fake_key", endpoint="fake_endpoint", model_id="fake_model_id")
+        DocumentIntelligenceOCR(
+            key="fake_key", endpoint="fake_endpoint", model_id="fake_model_id"
+        )
 
 
 def test_model_id_correct_then_raises_no_exception():
-    """Confirm that there's no exception if the model_id is correct"""
-    DocumentIntelligenceOCR(key="fake_key", endpoint="fake_endpoint", model_id="prebuilt-document")
+    """Confirm that there's no exception if the model_id is correct."""
+    DocumentIntelligenceOCR(
+        key="fake_key", endpoint="fake_endpoint", model_id="prebuilt-document"
+    )
 
 
 @pytest.mark.parametrize(
@@ -111,7 +184,9 @@ def test_model_id_correct_then_raises_no_exception():
         ({"pages": [{"words": []}, {"words": []}]}, False),
     ],
 )
-@mock.patch("presidio_image_redactor.document_intelligence_ocr.DocumentIntelligenceOCR.analyze_document")
+@mock.patch(
+    "presidio_image_redactor.document_intelligence_ocr.DocumentIntelligenceOCR.analyze_document"
+)
 def test_pages_not_one_then_raises_exception(analyze_document, result, ok: bool):
     """Test that the number of pages is exactly one.
 

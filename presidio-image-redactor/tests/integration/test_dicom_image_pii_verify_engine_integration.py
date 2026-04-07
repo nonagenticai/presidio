@@ -7,7 +7,6 @@ the original parent ImagePiiVerifyEngine class.
 
 import PIL
 import pydicom
-
 from presidio_image_redactor import DicomImagePiiVerifyEngine
 
 PADDING_WIDTH = 25
@@ -29,8 +28,13 @@ def test_verify_correctly(
         expected_ocr_results_labels.append(item["label"])
 
     # Act
-    test_image_verify, test_ocr_results_formatted, _ = DicomImagePiiVerifyEngine().verify_dicom_instance(
-        instance=get_mock_dicom_instance, padding_width=PADDING_WIDTH, display_image=True, ocr_kwargs=None
+    test_image_verify, test_ocr_results_formatted, _ = (
+        DicomImagePiiVerifyEngine().verify_dicom_instance(
+            instance=get_mock_dicom_instance,
+            padding_width=PADDING_WIDTH,
+            display_image=True,
+            ocr_kwargs=None,
+        )
     )
 
     # Check most OCR results (labels) are the same
@@ -38,8 +42,12 @@ def test_verify_correctly(
     test_ocr_results_labels = []
     for item in test_ocr_results_formatted:
         test_ocr_results_labels.append(item["label"])
-    test_common_labels = set(expected_ocr_results_labels).intersection(set(test_ocr_results_labels))
-    test_all_labels = set(expected_ocr_results_labels).union(set(test_ocr_results_labels))
+    test_common_labels = set(expected_ocr_results_labels).intersection(
+        set(test_ocr_results_labels)
+    )
+    test_all_labels = set(expected_ocr_results_labels).union(
+        set(test_ocr_results_labels)
+    )
 
     # Assert
     assert isinstance(test_image_verify, PIL.Image.Image)

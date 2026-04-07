@@ -1,4 +1,4 @@
-from methods import get_resource_image, compare_images
+from methods import compare_images, get_resource_image
 from presidio_image_redactor import ImagePiiVerifyEngine
 
 

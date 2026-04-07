@@ -1,4 +1,5 @@
 """Streamlit app for Presidio."""
+
 import logging
 import os
 import traceback
@@ -8,17 +9,16 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 from annotated_text import annotated_text
-from streamlit_tags import st_tags
-
 from openai_fake_data_generator import OpenAIParams
 from presidio_helpers import (
-    get_supported_entities,
     analyze,
-    anonymize,
-    annotate,
-    create_fake_data,
     analyzer_engine,
+    annotate,
+    anonymize,
+    create_fake_data,
+    get_supported_entities,
 )
+from streamlit_tags import st_tags
 
 st.set_page_config(
     page_title="Presidio demo",
@@ -84,14 +84,14 @@ if st_model == "Other":
     st_model_package = st.sidebar.selectbox(
         "NER model OSS package", options=["spaCy", "stanza", "Flair", "HuggingFace"]
     )
-    st_model = st.sidebar.text_input(f"NER model name", value="")
+    st_model = st.sidebar.text_input("NER model name", value="")
 
 if st_model == "Azure AI Language":
     st_ta_key = st.sidebar.text_input(
-        f"Azure AI Language key", value=os.getenv("TA_KEY", ""), type="password"
+        "Azure AI Language key", value=os.getenv("TA_KEY", ""), type="password"
     )
     st_ta_endpoint = st.sidebar.text_input(
-        f"Azure AI Language endpoint",
+        "Azure AI Language endpoint",
         value=os.getenv("TA_ENDPOINT", default=""),
         help="For more info: https://learn.microsoft.com/en-us/azure/cognitive-services/language-service/personally-identifiable-information/overview",  # noqa: E501
     )
@@ -237,9 +237,9 @@ with st_deny_allow_expander:
 with st.expander("About this demo", expanded=False):
     st.info(
         """Presidio is an open source customizable framework for PII detection and de-identification.
-        \n\n[Code](https://aka.ms/presidio) | 
-        [Tutorial](https://microsoft.github.io/presidio/tutorial/) | 
-        [Installation](https://microsoft.github.io/presidio/installation/) | 
+        \n\n[Code](https://aka.ms/presidio) |
+        [Tutorial](https://microsoft.github.io/presidio/tutorial/) |
+        [Installation](https://microsoft.github.io/presidio/installation/) |
         [FAQ](https://microsoft.github.io/presidio/faq/) |
         [Feedback](https://forms.office.com/r/9ufyYjfDaY) |"""
     )
@@ -251,10 +251,10 @@ with st.expander("About this demo", expanded=False):
     - Explore the different de-identification options, including redaction, masking, encryption and more.
     - Generate synthetic text with Microsoft Presidio and OpenAI.
     - Configure allow and deny lists.
-    
+
     This demo website shows some of Presidio's capabilities.
     [Visit our website](https://microsoft.github.io/presidio) for more info,
-    samples and deployment options.    
+    samples and deployment options.
     """
     )
 
@@ -312,7 +312,7 @@ try:
     # After
     if st_operator not in ("highlight", "synthesize"):
         with col2:
-            st.subheader(f"Output")
+            st.subheader("Output")
             st_anonymize_results = anonymize(
                 text=st_text,
                 operator=st_operator,
@@ -326,7 +326,7 @@ try:
             )
     elif st_operator == "synthesize":
         with col2:
-            st.subheader(f"OpenAI Generated output")
+            st.subheader("OpenAI Generated output")
             fake_data = create_fake_data(
                 st_text,
                 st_analyze_results,

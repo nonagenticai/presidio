@@ -1,6 +1,6 @@
 import pytest
-
 from presidio_analyzer.predefined_recognizers import ItVatCodeRecognizer
+
 from tests import assert_result_within_score_range
 
 
@@ -23,11 +23,21 @@ def entities():
         # Test with an invalid VAT Code
         ("00000000001", 0, (), ()),
         # Test with a valid VAT Code
-        ("01333550323", 1, ((0, 11),), ((0.9, 1.0),),),
+        (
+            "01333550323",
+            1,
+            ((0, 11),),
+            ((0.9, 1.0),),
+        ),
         # Test with two codes but only the second is a valid VAT code
         ("00000000000 and 01333550323", 1, ((16, 27),), ((0.9, 1.0),)),
         # Test with a valid VAT Code and a character that needs to be replaced
-        ("01333550_323", 1, ((0, 12),), ((0.9, 1.0),),),
+        (
+            "01333550_323",
+            1,
+            ((0, 12),),
+            ((0.9, 1.0),),
+        ),
         # fmt: on
     ],
 )

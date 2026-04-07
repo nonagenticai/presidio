@@ -28,8 +28,7 @@ import logging
 from typing import List
 
 import requests
-
-from presidio_analyzer import RemoteRecognizer, RecognizerResult
+from presidio_analyzer import RecognizerResult, RemoteRecognizer
 from presidio_analyzer.nlp_engine import NlpArtifacts
 
 logger = logging.getLogger("presidio-analyzer")
@@ -108,7 +107,6 @@ class ExampleRemoteRecognizer(RemoteRecognizer):
 
 
 if __name__ == "__main__":
-
     # Illustrative example only: Run Presidio analyzer
     # as if it was an external PII detection mechanism.
     rec = ExampleRemoteRecognizer(

@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import SgFinRecognizer
 
 from tests import assert_result_within_score_range
-from presidio_analyzer.predefined_recognizers import SgFinRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -33,13 +33,11 @@ def entities():
         ("S9108268C T7572225C", 2, [(0, 9), (10, 19)], [(0.5, 0.8)] * 2),
         # Test with valid NRIC/FIN in a sentence
         ("NRIC S2740116C was processed", 1, [(5, 14)], [(0.5, 0.8)]),
-
         # ## Weak match
         # Test with invalid NRIC/FIN starting with A
         ("A1234567Z", 1, [(0, 9)], [(0, 0.3)]),
         # # Test with invalid NRIC/FIN starting with B
         ("B1234567Z", 1, [(0, 9)], [(0, 0.3)]),
-        
         ## No match
         # Test with invalid length
         ("PA12348L", 0, [], []),
@@ -64,6 +62,7 @@ def test_when_sgfins_in_text_then_all_sg_fins_found(
         results, expected_positions, expected_score_ranges
     ):
         import logging
+
         logging.info(f"result: {result}")
         # Adjust end_score if it's marked with a placeholder value that indicates it should be considered as max_score
         if end_score == "max":

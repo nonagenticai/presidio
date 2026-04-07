@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import PlPeselRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import PlPeselRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -19,8 +19,12 @@ def entities():
     [
         # fmt: off
         # valid PESEL scores
-        ("11111111114", 1, ((0, 11),),),
-        ("My pesel is 11111111114.", 1, ((12, 23), )),
+        (
+            "11111111114",
+            1,
+            ((0, 11),),
+        ),
+        ("My pesel is 11111111114.", 1, ((12, 23),)),
         # invalid PESEL scores
         ("1111321111", 0, ()),
         ("11110021111", 0, ()),

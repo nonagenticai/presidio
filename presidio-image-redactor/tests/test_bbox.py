@@ -1,17 +1,17 @@
-"""Test suite for bbox.py"""
+"""Test suite for bbox.py."""
 
+from typing import List
+
+import pytest
 from presidio_image_redactor import BboxProcessor
 from presidio_image_redactor.entities.image_recognizer_result import (
     ImageRecognizerResult,
 )
-import pytest
-
-from typing import List
 
 
 @pytest.fixture(scope="module")
 def mock_bbox_processor():
-    """Instance of BboxProcessor"""
+    """Instance of BboxProcessor."""
     bbox_proc = BboxProcessor()
 
     return bbox_proc
@@ -164,7 +164,7 @@ def test_get_bboxes_from_analyzer_results_happy_path(
     analyzer_results: list,
     expected_bboxes: list,
 ):
-    """Test happy path for BboxProcessor.get_bboxes_from_analyzer_results
+    """Test happy path for BboxProcessor.get_bboxes_from_analyzer_results.
 
     Args:
         analyzer_results (list): Results from using ImageAnalyzerEngine.
@@ -214,9 +214,27 @@ def test_get_bboxes_from_analyzer_results_happy_path(
             ],
             25,
             [
-                {"left": 0, "top": 0, "width": 100, "height": 100, "entity_type": "TYPE_1"},
-                {"left": 0, "top": 24, "width": 75, "height": 51, "entity_type": "TYPE_2"},
-                {"left": 588, "top": 1, "width": 226, "height": 35, "entity_type": "TYPE_3"},
+                {
+                    "left": 0,
+                    "top": 0,
+                    "width": 100,
+                    "height": 100,
+                    "entity_type": "TYPE_1",
+                },
+                {
+                    "left": 0,
+                    "top": 24,
+                    "width": 75,
+                    "height": 51,
+                    "entity_type": "TYPE_2",
+                },
+                {
+                    "left": 588,
+                    "top": 1,
+                    "width": 226,
+                    "height": 35,
+                    "entity_type": "TYPE_3",
+                },
             ],
         ),
     ],
@@ -227,7 +245,7 @@ def test_remove_bbox_padding_happy_path(
     padding_width: int,
     expected_bboxes: list,
 ):
-    """Test happy path for BboxProcessor.remove_bbox_padding
+    """Test happy path for BboxProcessor.remove_bbox_padding.
 
     Args:
         mock_intermediate_bbox (dict): Value for mock of get_bboxes_from_analyzer_results.
@@ -237,7 +255,9 @@ def test_remove_bbox_padding_happy_path(
     # Arrange
 
     # Act
-    test_bboxes_dict = mock_bbox_processor.remove_bbox_padding(mock_intermediate_bbox, padding_width)
+    test_bboxes_dict = mock_bbox_processor.remove_bbox_padding(
+        mock_intermediate_bbox, padding_width
+    )
 
     # Assert
     assert test_bboxes_dict == expected_bboxes
@@ -250,7 +270,7 @@ def test_remove_bbox_padding_happy_path(
 def test_remove_bbox_padding_exceptions(
     mock_bbox_processor: BboxProcessor, padding_width: int, expected_error_type: str
 ):
-    """Test error handling of remove_bbox_padding
+    """Test error handling of remove_bbox_padding.
 
     Args:
         padding_width (int): Pixel width used for padding.
@@ -406,7 +426,7 @@ def test_match_with_source_happy_path(
     expected_results: List[dict],
     expected_match_found: bool,
 ):
-    """Test happy path for BboxProcessor.match_with_source
+    """Test happy path for BboxProcessor.match_with_source.
 
     Args:
         mock_bbox_processor (BboxProcessor): Instantiated engine.
@@ -420,7 +440,9 @@ def test_match_with_source_happy_path(
     all_pos = []
 
     # Act
-    test_all_pos, test_match_found = mock_bbox_processor.match_with_source(all_pos, source_labels, results, tolerance)
+    test_all_pos, test_match_found = mock_bbox_processor.match_with_source(
+        all_pos, source_labels, results, tolerance
+    )
 
     # Assert
     assert test_all_pos == expected_results

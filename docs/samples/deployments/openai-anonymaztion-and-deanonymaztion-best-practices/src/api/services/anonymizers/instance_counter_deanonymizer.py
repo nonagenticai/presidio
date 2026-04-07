@@ -1,10 +1,11 @@
+from typing import Dict
+
 from presidio_anonymizer.operators import Operator, OperatorType
 
-from typing import Dict
 
 class InstanceCounterDeanonymizer(Operator):
     """
-    Deanonymizer which replaces the unique identifier 
+    Deanonymizer which replaces the unique identifier
     with the original text.
     """
 
@@ -19,7 +20,9 @@ class InstanceCounterDeanonymizer(Operator):
         if entity_type not in entity_mapping:
             raise ValueError(f"Entity type {entity_type} not found in entity mapping!")
         if text not in entity_mapping[entity_type].values():
-            raise ValueError(f"Text {text} not found in entity mapping for entity type {entity_type}!")
+            raise ValueError(
+                f"Text {text} not found in entity mapping for entity type {entity_type}!"
+            )
 
         return self._find_key_by_value(entity_mapping[entity_type], text)
 
@@ -29,7 +32,7 @@ class InstanceCounterDeanonymizer(Operator):
             if val == value:
                 return key
         return None
-    
+
     def validate(self, params: Dict = None) -> None:
         """Validate operator parameters."""
 

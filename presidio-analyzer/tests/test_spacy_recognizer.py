@@ -1,10 +1,9 @@
-
 import pytest
-from spacy.tokens import Span, Doc
+from presidio_analyzer.nlp_engine import NlpArtifacts
+from presidio_analyzer.predefined_recognizers import SpacyRecognizer
+from spacy.tokens import Doc, Span
 from spacy.util import get_lang_class
 
-from presidio_analyzer.nlp_engine import NlpArtifacts, SpacyNlpEngine
-from presidio_analyzer.predefined_recognizers import SpacyRecognizer
 from tests import assert_result_within_score_range
 
 
@@ -20,19 +19,19 @@ def nlp_recognizer(nlp_recognizers):
 
 @pytest.fixture(scope="module")
 def mock_nlp_artifacts():
-    en_vocab=get_lang_class("en")().vocab
+    en_vocab = get_lang_class("en")().vocab
     doc = Doc(en_vocab, words=["My", "name", "is", "Mitchell"])
     doc.ents = [Span(doc, 2, 3, label="PERSON")]
 
     nlp_artifacts = NlpArtifacts(
-            entities=doc.ents,
-            tokens=doc,
-            tokens_indices=[token.idx for token in doc],
-            lemmas=[token.lemma_ for token in doc],
-            nlp_engine=None,
-            language="en",
-            scores=[0.9 for _ in doc.ents],
-        )
+        entities=doc.ents,
+        tokens=doc,
+        tokens_indices=[token.idx for token in doc],
+        lemmas=[token.lemma_ for token in doc],
+        nlp_engine=None,
+        language="en",
+        scores=[0.9 for _ in doc.ents],
+    )
     return nlp_artifacts
 
 

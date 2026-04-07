@@ -2,11 +2,10 @@ import json
 from pathlib import Path
 
 import pytest
+from common.assertions import equal_json_strings
+from common.methods import analyze, analyzer_supported_entities, anonymize
 from presidio_analyzer import AnalyzerEngine, RecognizerResult
 from presidio_analyzer.nlp_engine import NlpEngineProvider
-
-from common.assertions import equal_json_strings
-from common.methods import analyze, anonymize, analyzer_supported_entities
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import EngineResult, OperatorResult
 
@@ -34,10 +33,10 @@ def test_given_text_with_pii_then_analyze_and_anonymize_successfully():
 
     expected_response = """
     [
-        {"entity_type": "PERSON", "start": 0, "end": 10, "score": 0.85, 
+        {"entity_type": "PERSON", "start": 0, "end": 10, "score": 0.85,
         "analysis_explanation": null, "recognition_metadata": {"recognizer_name": "SpacyRecognizer"}
         },
-        {"entity_type": "US_DRIVER_LICENSE", "start": 30, "end": 38, "score": 0.6499999999999999, 
+        {"entity_type": "US_DRIVER_LICENSE", "start": 30, "end": 38, "score": 0.6499999999999999,
         "analysis_explanation": null, "recognition_metadata": {"recognizer_name": "UsLicenseRecognizer"}
         }
     ]
@@ -164,10 +163,10 @@ def test_given_an_unknown_entity_then_anonymize_uses_defaults():
 
     expected_response = """
     [
-        {"entity_type": "PERSON", "start": 0, "end": 10, "score": 0.85, 
+        {"entity_type": "PERSON", "start": 0, "end": 10, "score": 0.85,
         "analysis_explanation": null, "recognition_metadata": {"recognizer_name": "SpacyRecognizer"}
         },
-        {"entity_type": "US_DRIVER_LICENSE", "start": 30, "end": 38, "score": 0.6499999999999999, 
+        {"entity_type": "US_DRIVER_LICENSE", "start": 30, "end": 38, "score": 0.6499999999999999,
         "analysis_explanation": null, "recognition_metadata": {"recognizer_name": "UsLicenseRecognizer"}
         }
     ]

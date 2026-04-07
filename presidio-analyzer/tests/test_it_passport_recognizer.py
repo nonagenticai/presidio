@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import ItPassportRecognizer
 
 from tests import assert_result_within_score_range
-from presidio_analyzer.predefined_recognizers import ItPassportRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -18,8 +18,18 @@ def entities():
     "text, expected_len, expected_positions, expected_score_ranges",
     [
         # fmt: off
-        ("AA1234567", 1, ((0, 9),), ((0.0, 0.05),),),
-        ("aa7654321", 1, ((0, 9),), ((0.0, 0.05),),)
+        (
+            "AA1234567",
+            1,
+            ((0, 9),),
+            ((0.0, 0.05),),
+        ),
+        (
+            "aa7654321",
+            1,
+            ((0, 9),),
+            ((0.0, 0.05),),
+        ),
         # fmt: on
     ],
 )

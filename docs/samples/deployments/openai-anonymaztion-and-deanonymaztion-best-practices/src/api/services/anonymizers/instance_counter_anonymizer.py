@@ -1,6 +1,7 @@
+from typing import Dict
+
 from presidio_anonymizer.operators import Operator, OperatorType
 
-from typing import Dict
 
 class InstanceCounterAnonymizer(Operator):
     """
@@ -20,9 +21,7 @@ class InstanceCounterAnonymizer(Operator):
 
         entity_mapping_for_type = entity_mapping.get(entity_type)
         if not entity_mapping_for_type:
-            new_text = self.REPLACING_FORMAT.format(
-                entity_type=entity_type, index=0
-            )
+            new_text = self.REPLACING_FORMAT.format(entity_type=entity_type, index=0)
             entity_mapping[entity_type] = {}
 
         else:

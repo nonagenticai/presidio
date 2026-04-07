@@ -1,13 +1,11 @@
 import logging
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
 from typing import Any, Optional
 
+from fastapi import Depends, FastAPI, HTTPException
+from pydantic import BaseModel
 from services.presidio.python_presidio_service import PythonPresidioService
-from services.presidio.hybrid_presidio_service import HybridPresidioService
-from services.presidio.http_presidio_service import HttpPresidioService
-from services.toolkit_service import ToolkitService
 from services.state.redis_state_service import RedisStateService
+from services.toolkit_service import ToolkitService
 
 app = FastAPI()
 
@@ -41,6 +39,7 @@ presidio_service = PythonPresidioService()
 state_service = RedisStateService()
 toolkit_service = ToolkitService(presidio_service, state_service)
 
+
 def get_toolkit_service() -> ToolkitService:
     return toolkit_service
 
@@ -48,9 +47,9 @@ def get_toolkit_service() -> ToolkitService:
 @app.post("/anonymize", response_model=AnonymizeResponse)
 async def anonymize_endpoint(
     request: AnonymizeRequest,
-    toolkit_service: ToolkitService = Depends(get_toolkit_service)
+    toolkit_service: ToolkitService = Depends(get_toolkit_service),
 ) -> Any:
-    """Anonymize the given text using Toolkit service"""
+    """Anonymize the given text using Toolkit service."""
 
     logger.info(f"Anonymize endpoint called with session_id: '{request.session_id}'")
 
@@ -65,17 +64,20 @@ async def anonymize_endpoint(
             status_code=500, detail="An error occurred during anonymization"
         )
 
+
 @app.post("/deanonymize", response_model=DeanonymizeResponse)
 async def deanonymize_endpoint(
     request: DeanonymizeRequest,
-    toolkit_service: ToolkitService = Depends(get_toolkit_service)
+    toolkit_service: ToolkitService = Depends(get_toolkit_service),
 ):
-    """Deanonymize the given text using Toolkit service"""
+    """Deanonymize the given text using Toolkit service."""
 
     logger.info(f"Deanonymize endpoint called with session_id: '{request.session_id}'")
 
     try:
-        result = toolkit_service.deanonymize(text=request.text, session_id=request.session_id)
+        result = toolkit_service.deanonymize(
+            text=request.text, session_id=request.session_id
+        )
         return result
     except ValueError as ve:
         logger.error(f"Deanonymization value error: {ve}")

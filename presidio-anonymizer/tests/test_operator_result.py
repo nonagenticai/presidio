@@ -1,5 +1,4 @@
 import pytest
-
 from presidio_anonymizer.entities import OperatorResult
 
 

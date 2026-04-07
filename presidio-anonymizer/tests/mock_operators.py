@@ -1,6 +1,6 @@
-from typing import Type, Dict
+from typing import Dict, Type
 
-from presidio_anonymizer.operators import OperatorType, Operator
+from presidio_anonymizer.operators import Operator, OperatorType
 
 
 def create_instance_counter_anonymizer() -> Type[Operator]:

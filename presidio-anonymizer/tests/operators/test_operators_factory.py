@@ -1,5 +1,4 @@
 import pytest
-
 from presidio_anonymizer.entities import InvalidParamError
 from presidio_anonymizer.operators import OperatorsFactory, OperatorType
 
@@ -50,16 +49,12 @@ def test_given_decrypt_operator_class_then_we_get_the_correct_class():
 
 
 def test_given_wrong_name_class_then_we_fail():
-    with pytest.raises(
-        InvalidParamError, match="Invalid operator class 'encrypt'."
-    ):
+    with pytest.raises(InvalidParamError, match="Invalid operator class 'encrypt'."):
         OperatorsFactory().create_operator_class("encrypt", OperatorType.Deanonymize)
 
 
 def test_given_wrong_name_for_anonymizer_class_then_we_fail():
-    with pytest.raises(
-        InvalidParamError, match="Invalid operator class 'decrypt'."
-    ):
+    with pytest.raises(InvalidParamError, match="Invalid operator class 'decrypt'."):
         OperatorsFactory().create_operator_class("decrypt", OperatorType.Anonymize)
 
 

@@ -1,16 +1,13 @@
 import sys
-
-import pytest
 from unittest.mock import MagicMock, patch
 
+import pytest
 from presidio_analyzer.predefined_recognizers import GLiNERRecognizer
 
 
 @pytest.fixture
 def mock_gliner():
-    """
-    Fixture to mock GLiNER class and its methods.
-    """
+    """Fixture to mock GLiNER class and its methods."""
 
     pytest.importorskip("gliner", reason="GLiNER package is not installed")
 
@@ -21,9 +18,7 @@ def mock_gliner():
         yield mock_gliner_instance
 
 
-def test_analyze_passed_entities_are_subset_of_entity_mapping(
-    mock_gliner
-):
+def test_analyze_passed_entities_are_subset_of_entity_mapping(mock_gliner):
 
     if sys.version_info < (3, 10):
         pytest.skip("gliner requires Python >= 3.10")
@@ -69,10 +64,8 @@ def test_analyze_passed_entities_are_subset_of_entity_mapping(
 
 def test_analyze_with_unsupported_entity(mock_gliner):
 
-
     if sys.version_info < (3, 10):
         pytest.skip("gliner requires Python >= 3.10")
-
 
     # Mock GLiNER predict_entities
     mock_gliner.gliner.predict_entities.return_value = [
@@ -121,7 +114,6 @@ def test_analyze_with_no_entities(mock_gliner):
 
     text = "No entities here."
     entities = []
-
 
     gliner_recognizer = GLiNERRecognizer(
         supported_entities=["ORG", "LOC", "PER"],

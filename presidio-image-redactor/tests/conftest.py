@@ -1,19 +1,14 @@
-import pydicom
 import json
 import os
+from typing import Iterable, Iterator, List, Tuple
 
+import pydicom
+import pytest
 from PIL import Image
+from presidio_analyzer.nlp_engine import NlpArtifacts, NlpEngine
 from presidio_analyzer.recognizer_result import RecognizerResult
-
 from presidio_image_redactor import ImageAnalyzerEngine
 from presidio_image_redactor.entities import ImageRecognizerResult
-import pytest
-
-from presidio_analyzer.nlp_engine import NlpEngine
-from presidio_analyzer.nlp_engine import NlpArtifacts
-
-from typing import Iterable, Iterator, Tuple, List
-
 
 SCRIPT_DIR = os.path.dirname(__file__)
 
@@ -62,7 +57,7 @@ def image_analyzer_engine():
 
 @pytest.fixture(scope="module")
 def get_mock_dicom_instance():
-    """DICOM instance to use in testing"""
+    """DICOM instance to use in testing."""
     # Assign
     filepath = f"{SCRIPT_DIR}/test_data/0_ORIGINAL.dcm"
 
@@ -74,8 +69,10 @@ def get_mock_dicom_instance():
 
 @pytest.fixture(scope="module")
 def get_mock_dicom_verify_results():
-    """Loaded json results file"""
-    with open(f"{SCRIPT_DIR}/integration/resources/dicom_pii_verify_integration.json") as json_file:
+    """Loaded json results file."""
+    with open(
+        f"{SCRIPT_DIR}/integration/resources/dicom_pii_verify_integration.json"
+    ) as json_file:
         results_json = json.load(json_file)
 
     return results_json
@@ -89,7 +86,7 @@ def get_mock_png():
 
 @pytest.fixture(scope="module")
 def get_dummy_nlp_engine():
-    """Dummy NLP engine to use in testing"""
+    """Dummy NLP engine to use in testing."""
 
     class DummyNlpEngine(NlpEngine):
         def load(self) -> None:

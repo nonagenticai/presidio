@@ -1,10 +1,8 @@
 from unittest.mock import Mock
+
 import pandas as pd
-
 import pytest
-
 from presidio_anonymizer.entities import OperatorConfig
-
 from presidio_structured import StructuredEngine
 from presidio_structured.data.data_processors import JsonDataProcessor
 

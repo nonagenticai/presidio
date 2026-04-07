@@ -1,10 +1,9 @@
 import pytest
-
 from presidio_anonymizer import BatchAnonymizerEngine
 from presidio_anonymizer.entities import (
-    RecognizerResult,
     DictRecognizerResult,
     OperatorConfig,
+    RecognizerResult,
 )
 
 

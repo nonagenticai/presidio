@@ -1,4 +1,4 @@
-from presidio_anonymizer.entities import OperatorResult, EngineResult
+from presidio_anonymizer.entities import EngineResult, OperatorResult
 
 
 def test_when_no_params_then_object_initialised_correctly():

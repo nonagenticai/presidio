@@ -1,14 +1,14 @@
 import pytest
-
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.deanonymize_engine import DeanonymizeEngine
 from presidio_anonymizer.entities import (
     InvalidParamError,
-    RecognizerResult,
-    OperatorResult,
     OperatorConfig,
+    OperatorResult,
+    RecognizerResult,
 )
-from presidio_anonymizer.operators import Decrypt, OperatorType, DeanonymizeKeep
+from presidio_anonymizer.operators import DeanonymizeKeep, Decrypt, OperatorType
+
 from tests.mock_operators import create_reverser_operator
 
 

@@ -1,21 +1,21 @@
-"""Unit tests for dicom_image_pii_verify_engine"""
+"""Unit tests for dicom_image_pii_verify_engine."""
 
 from copy import deepcopy
-import pydicom
-
-from presidio_image_redactor import (
-    TesseractOCR,
-    ImageAnalyzerEngine,
-    DicomImagePiiVerifyEngine,
-    BboxProcessor,
-)
 from typing import List
+
+import pydicom
 import pytest
+from presidio_image_redactor import (
+    BboxProcessor,
+    DicomImagePiiVerifyEngine,
+    ImageAnalyzerEngine,
+    TesseractOCR,
+)
 
 
 @pytest.fixture(scope="module")
 def mock_engine():
-    """Instance of the DicomImagePiiVerifyEngine"""
+    """Instance of the DicomImagePiiVerifyEngine."""
     dicom_image_pii_verify_engine = DicomImagePiiVerifyEngine()
 
     return dicom_image_pii_verify_engine
@@ -23,7 +23,7 @@ def mock_engine():
 
 @pytest.fixture(scope="module")
 def mock_gt_single(get_mock_dicom_verify_results: dict):
-    """Ground truth for a single instance"""
+    """Ground truth for a single instance."""
     gt = get_mock_dicom_verify_results["ground_truth"]
     return gt
 
@@ -40,14 +40,16 @@ def mock_gt_single(get_mock_dicom_verify_results: dict):
         (None, None),
     ],
 )
-def test_init_happy_path(ocr_engine: TesseractOCR, image_analyzer_engine: ImageAnalyzerEngine):
+def test_init_happy_path(
+    ocr_engine: TesseractOCR, image_analyzer_engine: ImageAnalyzerEngine
+):
     """Test happy path for DicomImagePiiVerifyEngine.__init__
     Args:
         ocr_engine (TesseractOCR): Tesseract OCR engine or None.
         image_analyzer_engine (ImageAnalyzerEngine): Presidio image analyzer engine or None.
     """
     try:
-        test_engine = DicomImagePiiVerifyEngine(ocr_engine, image_analyzer_engine)
+        DicomImagePiiVerifyEngine(ocr_engine, image_analyzer_engine)
     except:
         raise TypeError("Invalid input into initializing")
 
@@ -68,22 +70,40 @@ def test_verify_dicom_instance_happy_path(
     # Assign
     padding_width = 25
 
-    mock_greyscale = mocker.patch.object(DicomImagePiiVerifyEngine, "_check_if_greyscale", return_value=None)
-    mock_rescale_array = mocker.patch.object(DicomImagePiiVerifyEngine, "_rescale_dcm_pixel_array", return_value=None)
+    mock_greyscale = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "_check_if_greyscale", return_value=None
+    )
+    mock_rescale_array = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "_rescale_dcm_pixel_array", return_value=None
+    )
     mock_image_open = mocker.patch(
         "presidio_image_redactor.dicom_image_pii_verify_engine.Image.fromarray",
         return_value=None,
     )
-    mock_add_padding = mocker.patch.object(DicomImagePiiVerifyEngine, "_add_padding", return_value=None)
-    mock_parse_ocr_kwargs = mocker.patch.object(ImageAnalyzerEngine, "_parse_ocr_kwargs", return_value=[{}, None])
-    mock_perform_ocr = mocker.patch.object(TesseractOCR, "perform_ocr", return_value=None)
-    mock_format_ocr_results = mocker.patch.object(BboxProcessor, "get_bboxes_from_ocr_results", return_value=None)
-    mock_analyze = mocker.patch.object(DicomImagePiiVerifyEngine, "_get_analyzer_results", return_value=None)
+    mock_add_padding = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "_add_padding", return_value=None
+    )
+    mock_parse_ocr_kwargs = mocker.patch.object(
+        ImageAnalyzerEngine, "_parse_ocr_kwargs", return_value=[{}, None]
+    )
+    mock_perform_ocr = mocker.patch.object(
+        TesseractOCR, "perform_ocr", return_value=None
+    )
+    mock_format_ocr_results = mocker.patch.object(
+        BboxProcessor, "get_bboxes_from_ocr_results", return_value=None
+    )
+    mock_analyze = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "_get_analyzer_results", return_value=None
+    )
     mock_format_analyzer_results = mocker.patch.object(
         BboxProcessor, "get_bboxes_from_analyzer_results", return_value=None
     )
-    mock_get_pii = mocker.patch.object(ImageAnalyzerEngine, "get_pii_bboxes", return_value=None)
-    mock_add_bboxes = mocker.patch.object(ImageAnalyzerEngine, "add_custom_bboxes", return_value=None)
+    mock_get_pii = mocker.patch.object(
+        ImageAnalyzerEngine, "get_pii_bboxes", return_value=None
+    )
+    mock_add_bboxes = mocker.patch.object(
+        ImageAnalyzerEngine, "add_custom_bboxes", return_value=None
+    )
 
     # Act
     _, _, _ = mock_engine.verify_dicom_instance(get_mock_dicom_instance, padding_width)
@@ -149,16 +169,26 @@ def test_eval_dicom_instance_happy_path(
         "verify_dicom_instance",
         return_value=[None, None, None],
     )
-    mock_get_ocr_bboxes = mocker.patch.object(BboxProcessor, "get_bboxes_from_ocr_results", return_value=None)
+    mock_get_ocr_bboxes = mocker.patch.object(
+        BboxProcessor, "get_bboxes_from_ocr_results", return_value=None
+    )
     mock_get_analyzer_bboxes = mocker.patch.object(
         BboxProcessor,
         "get_bboxes_from_analyzer_results",
         return_value=None,
     )
-    mock_remove_dups = mocker.patch.object(DicomImagePiiVerifyEngine, "_remove_duplicate_entities", return_value=None)
-    mock_label_positives = mocker.patch.object(DicomImagePiiVerifyEngine, "_label_all_positives", return_value=None)
-    mock_precision = mocker.patch.object(DicomImagePiiVerifyEngine, "calculate_precision", return_value=None)
-    mock_recall = mocker.patch.object(DicomImagePiiVerifyEngine, "calculate_recall", return_value=None)
+    mock_remove_dups = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "_remove_duplicate_entities", return_value=None
+    )
+    mock_label_positives = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "_label_all_positives", return_value=None
+    )
+    mock_precision = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "calculate_precision", return_value=None
+    )
+    mock_recall = mocker.patch.object(
+        DicomImagePiiVerifyEngine, "calculate_recall", return_value=None
+    )
 
     # Act
     _, test_eval_results = mock_engine.eval_dicom_instance(
@@ -552,7 +582,7 @@ def test_label_all_positives_happy_path(
     tolerance: int,
     expected_results: List[dict],
 ):
-    """Test happy path for DicomImagePiiVerifyEngine._label_all_positives
+    """Test happy path for DicomImagePiiVerifyEngine._label_all_positives.
 
     Args:
         mock_engine (DicomImagePiiVerifyEngine): Instantiated engine.
@@ -571,7 +601,9 @@ def test_label_all_positives_happy_path(
         analyzer_results = get_mock_dicom_verify_results["analyzer_results"]
 
     # Act
-    test_all_pos = mock_engine._label_all_positives(mock_gt_single, ocr_results, analyzer_results, tolerance)
+    test_all_pos = mock_engine._label_all_positives(
+        mock_gt_single, ocr_results, analyzer_results, tolerance
+    )
 
     # Assert
     assert test_all_pos == expected_results
@@ -636,7 +668,7 @@ def test_calculate_precision_happy_path(
     all_pos: List[dict],
     expected_result: float,
 ):
-    """Test happy path for DicomImagePiiVerifyEngine.calculate_precision
+    """Test happy path for DicomImagePiiVerifyEngine.calculate_precision.
 
     Args:
         mock_engine (DicomImagePiiVerifyEngine): Instantiated engine.
@@ -695,7 +727,7 @@ def test_calculate_recall_happy_path(
     all_pos: dict,
     expected_result: float,
 ):
-    """Test happy path for DicomImagePiiVerifyEngine.calculate_recall
+    """Test happy path for DicomImagePiiVerifyEngine.calculate_recall.
 
     Args:
         mock_engine (DicomImagePiiVerifyEngine): Instantiated engine.

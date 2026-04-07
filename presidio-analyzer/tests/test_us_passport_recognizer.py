@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import UsPassportRecognizer
 
 from tests import assert_result_within_score_range
-from presidio_analyzer.predefined_recognizers import UsPassportRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -18,11 +18,36 @@ def entities():
     "text, expected_len, expected_positions, expected_score_ranges",
     [
         # fmt: off
-        ("912803456", 1, ((0, 9),), ((0.0, 0.1),),),
-        ("Z12803456", 1, ((0, 9),), ((0.0, 0.15),),),
-        ("A12803456", 1, ((0, 9),), ((0.0, 0.15),),),
-        ("my travel document is A12803456", 1, ((22, 31),), ((0.0, 0.15),),),
-        ("my travel passport is A12803456", 1, ((22, 31),), ((0.0, 0.15),),),
+        (
+            "912803456",
+            1,
+            ((0, 9),),
+            ((0.0, 0.1),),
+        ),
+        (
+            "Z12803456",
+            1,
+            ((0, 9),),
+            ((0.0, 0.15),),
+        ),
+        (
+            "A12803456",
+            1,
+            ((0, 9),),
+            ((0.0, 0.15),),
+        ),
+        (
+            "my travel document is A12803456",
+            1,
+            ((22, 31),),
+            ((0.0, 0.15),),
+        ),
+        (
+            "my travel passport is A12803456",
+            1,
+            ((22, 31),),
+            ((0.0, 0.15),),
+        ),
         # requires multiword context
         # ("my travel document is 912803456", 1, ((22, 31),), ((.5, 0.6),),),
         # fmt: on

@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import FiPersonalIdentityCodeRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import FiPersonalIdentityCodeRecognizer
 
 
 @pytest.fixture(scope="module")

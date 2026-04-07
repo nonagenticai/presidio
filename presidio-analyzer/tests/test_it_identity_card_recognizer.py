@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import ItIdentityCardRecognizer
 
 from tests import assert_result_within_score_range
-from presidio_analyzer.predefined_recognizers import ItIdentityCardRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -22,13 +22,29 @@ def entities():
         (
             "AA1234567 aa 1234567",
             2,
-            ((0, 9), (10, 20),),
-            ((0.0, 0.05), (0.0, 0.05),),
+            (
+                (0, 9),
+                (10, 20),
+            ),
+            (
+                (0.0, 0.05),
+                (0.0, 0.05),
+            ),
         ),
         # CIE 2.0
-        ("1234567Aa", 1, ((0, 9),), ((0.0, 0.05),),),
+        (
+            "1234567Aa",
+            1,
+            ((0, 9),),
+            ((0.0, 0.05),),
+        ),
         # CIE 3.0
-        ("AA12345aa", 1, ((0, 9),), ((0.0, 0.05),),),
+        (
+            "AA12345aa",
+            1,
+            ((0, 9),),
+            ((0.0, 0.05),),
+        ),
         # fmt: on
     ],
 )

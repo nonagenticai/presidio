@@ -3,11 +3,10 @@ from typing import Dict
 
 import pytest
 import spacy
-
 from presidio_analyzer.nlp_engine import (
+    NlpEngineProvider,
     SpacyNlpEngine,
     StanzaNlpEngine,
-    NlpEngineProvider,
 )
 from presidio_analyzer.nlp_engine.transformers_nlp_engine import TransformersNlpEngine
 
@@ -176,6 +175,7 @@ def test_when_labels_to_ignore_not_define_in_conf_file_default_into_empty_set(mo
 
     engine = NlpEngineProvider(conf_file=conf_file).create_engine()
     assert len(engine.ner_model_configuration.labels_to_ignore) == 0
+
 
 @pytest.mark.skip_engine("transformers_en")
 def test_when_create_transformers_nlp_engine_then_succeeds(mocker):

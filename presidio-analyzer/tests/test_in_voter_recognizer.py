@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import InVoterRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import InVoterRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -25,8 +25,18 @@ def entities():
         ("this MUP5632811", 1, (5, 15), 0.3),
         ("You can vote with your CPJ4467918 number", 1, (23, 33), 0.4),
         # invalid
-        ("zxdf8923q1", 0, (), (),),
-        ("A8923571WZ", 0, (), (),),
+        (
+            "zxdf8923q1",
+            0,
+            (),
+            (),
+        ),
+        (
+            "A8923571WZ",
+            0,
+            (),
+            (),
+        ),
         # fmt: on
     ],
 )

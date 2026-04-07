@@ -7,9 +7,7 @@ from presidio_analyzer.predefined_recognizers import (
 
 
 class RecognizerRegistryMock(RecognizerRegistry):
-    """
-    A mock that acts as a recognizers registry
-    """
+    """A mock that acts as a recognizers registry."""
 
     def load_predefined_recognizers(self, languages=None, nlp_engine=None):
         self.recognizers.extend(

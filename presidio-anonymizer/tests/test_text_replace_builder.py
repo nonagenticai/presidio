@@ -1,6 +1,6 @@
 import pytest
-from presidio_anonymizer.entities import InvalidParamError
 from presidio_anonymizer.core import TextReplaceBuilder
+from presidio_anonymizer.entities import InvalidParamError
 
 
 @pytest.mark.parametrize(
@@ -10,7 +10,7 @@ from presidio_anonymizer.core import TextReplaceBuilder
         ("hello world", 0, 5, "", " world", 6),
         ("hello world", 5, 5, "bla", "hellobla world", 9),
         ("hello world", 5, 12, "bla", "hellobla", 3),
-        ("The url is http://microsofy.com", 11, 31, "", "The url is ", 0)
+        ("The url is http://microsofy.com", 11, 31, "", "The url is ", 0),
     ],
     # fmt: on
 )

@@ -1,10 +1,10 @@
 import logging
-from typing import Optional, List, Tuple, Set
+from typing import List, Optional, Set, Tuple
 
 from presidio_analyzer import (
-    RecognizerResult,
-    EntityRecognizer,
     AnalysisExplanation,
+    EntityRecognizer,
+    RecognizerResult,
 )
 from presidio_analyzer.nlp_engine import NlpArtifacts
 
@@ -197,7 +197,6 @@ class FlairRecognizer(EntityRecognizer):
 
 
 if __name__ == "__main__":
-
     from presidio_analyzer import AnalyzerEngine, RecognizerRegistry
 
     flair_recognizer = (

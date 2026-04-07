@@ -1,12 +1,11 @@
 import pytest
-
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import (
-    RecognizerResult,
-    OperatorConfig,
     ConflictResolutionStrategy,
     EngineResult,
+    OperatorConfig,
     OperatorResult,
+    RecognizerResult,
 )
 
 
@@ -15,22 +14,26 @@ from presidio_anonymizer.entities import (
     "text, analyzer_result1, analyzer_result2, conflict_strategy, expected_result",
     [
         (
-            ("Fake card number 4151 3217 6243 3448.com "
-             "that overlaps with nonexisting URL."),
+            (
+                "Fake card number 4151 3217 6243 3448.com "
+                "that overlaps with nonexisting URL."
+            ),
             RecognizerResult("CREDIT_CARD", 17, 36, 0.8),
             RecognizerResult("URL", 32, 40, 0.8),
             ConflictResolutionStrategy.MERGE_SIMILAR_OR_CONTAINED,
-            ("Fake card number 4151 3217 6243 34483448.com "
-             "that overlaps with nonexisting URL.")
+            (
+                "Fake card number 4151 3217 6243 34483448.com "
+                "that overlaps with nonexisting URL."
+            ),
         ),
         (
             "Fake text with SSN 145-45-6789 and phone number 953-555-5555.",
             RecognizerResult("SSN", 19, 30, 0.85),
             RecognizerResult("PHONE_NUMBER", 48, 60, 0.95),
             None,
-            "Fake text with SSN 145-45-6789 and phone number 953-555-5555."
+            "Fake text with SSN 145-45-6789 and phone number 953-555-5555.",
         ),
-    ]
+    ],
     # fmt: on
 )
 def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
@@ -42,7 +45,7 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
         text,
         [analyzer_result1, analyzer_result2],
         {"DEFAULT": operator_config},
-        conflict_resolution=conflict_strategy
+        conflict_resolution=conflict_strategy,
     ).text
 
     assert result == expected_result
@@ -60,7 +63,7 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
             ),
             [
                 RecognizerResult("CREDIT_CARD", 17, 36, 1),
-                RecognizerResult("URL", 32, 40, 0.5)
+                RecognizerResult("URL", 32, 40, 0.5),
             ],
             ConflictResolutionStrategy.REMOVE_INTERSECTIONS,
             EngineResult(
@@ -69,11 +72,12 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
                     "that overlaps with nonexisting URL."
                 ),
                 items=[
-                    OperatorResult(17, 36, 'CREDIT_CARD',
-                                   '4151 3217 6243 3448', 'keep'),
-                    OperatorResult(36, 40, 'URL', '.com', 'keep')
-                ]
-            )
+                    OperatorResult(
+                        17, 36, "CREDIT_CARD", "4151 3217 6243 3448", "keep"
+                    ),
+                    OperatorResult(36, 40, "URL", ".com", "keep"),
+                ],
+            ),
         ),
         # URL Entity has higher score, so adjustment will occur at CREDIT_CARD entity
         (
@@ -83,7 +87,7 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
             ),
             [
                 RecognizerResult("CREDIT_CARD", 17, 36, 0.8),
-                RecognizerResult("URL", 32, 40, 1)
+                RecognizerResult("URL", 32, 40, 1),
             ],
             ConflictResolutionStrategy.REMOVE_INTERSECTIONS,
             EngineResult(
@@ -92,10 +96,10 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
                     "that overlaps with nonexisting URL."
                 ),
                 items=[
-                    OperatorResult(17, 32, 'CREDIT_CARD', '4151 3217 6243 ', 'keep'),
-                    OperatorResult(32, 40, 'URL', '3448.com', 'keep')
-                ]
-            )
+                    OperatorResult(17, 32, "CREDIT_CARD", "4151 3217 6243 ", "keep"),
+                    OperatorResult(32, 40, "URL", "3448.com", "keep"),
+                ],
+            ),
         ),
         # Both entities has same score, so adjustment will occur at second entity
         (
@@ -105,7 +109,7 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
             ),
             [
                 RecognizerResult("CREDIT_CARD", 17, 36, 0.8),
-                RecognizerResult("URL", 32, 40, 0.8)
+                RecognizerResult("URL", 32, 40, 0.8),
             ],
             ConflictResolutionStrategy.REMOVE_INTERSECTIONS,
             EngineResult(
@@ -114,11 +118,12 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
                     "that overlaps with nonexisting URL."
                 ),
                 items=[
-                    OperatorResult(17, 36, 'CREDIT_CARD',
-                                   '4151 3217 6243 3448', 'keep'),
-                    OperatorResult(36, 40, 'URL', '.com', 'keep')
-                ]
-            )
+                    OperatorResult(
+                        17, 36, "CREDIT_CARD", "4151 3217 6243 3448", "keep"
+                    ),
+                    OperatorResult(36, 40, "URL", ".com", "keep"),
+                ],
+            ),
         ),
         # More than one entity intersections
         (
@@ -130,7 +135,7 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
                 RecognizerResult("CREDIT_CARD", 17, 36, 0.8),
                 RecognizerResult("URL", 28, 40, 0.8),
                 RecognizerResult("Ent1", 31, 42, 0.9),
-                RecognizerResult("Ent2", 25, 40, 0.8)
+                RecognizerResult("Ent2", 25, 40, 0.8),
             ],
             ConflictResolutionStrategy.REMOVE_INTERSECTIONS,
             EngineResult(
@@ -139,13 +144,12 @@ def test_when_merge_similar_or_contained_selected_then_default_conflict_handled(
                     "that overlaps with nonexisting URL."
                 ),
                 items=[
-                    OperatorResult(31, 42, 'Ent1', ' 3448.com t', 'keep'),
-                    OperatorResult(17, 31, 'CREDIT_CARD', '4151 3217 6243',  'keep')
-                ]
-            )
-        )
-
-    ]
+                    OperatorResult(31, 42, "Ent1", " 3448.com t", "keep"),
+                    OperatorResult(17, 31, "CREDIT_CARD", "4151 3217 6243", "keep"),
+                ],
+            ),
+        ),
+    ],
     # fmt: on
 )
 def test_when_remove_intersections_conflict_selected_then_all_conflicts_handled(
@@ -158,7 +162,7 @@ def test_when_remove_intersections_conflict_selected_then_all_conflicts_handled(
         text,
         analyzer_results,
         {"DEFAULT": operator_config},
-        conflict_resolution=conflict_strategy
+        conflict_resolution=conflict_strategy,
     )
 
     assert result.text == expected_result.text

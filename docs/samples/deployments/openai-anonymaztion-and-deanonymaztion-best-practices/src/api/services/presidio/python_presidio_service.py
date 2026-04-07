@@ -1,20 +1,27 @@
 import logging
 from timeit import default_timer as timer
 from typing import List, Tuple
-from presidio_analyzer import AnalyzerEngine
-from presidio_anonymizer import AnonymizerEngine, DeanonymizeEngine, OperatorConfig, OperatorResult
-from presidio_analyzer.nlp_engine import NlpEngineProvider
 
-from services.presidio.presidio_service import PresidioService
+from presidio_analyzer import AnalyzerEngine
+from presidio_analyzer.nlp_engine import NlpEngineProvider
+from presidio_anonymizer import (
+    AnonymizerEngine,
+    DeanonymizeEngine,
+    OperatorConfig,
+    OperatorResult,
+)
 from services.anonymizers.instance_counter_anonymizer import InstanceCounterAnonymizer
-from services.anonymizers.instance_counter_deanonymizer import InstanceCounterDeanonymizer
+from services.anonymizers.instance_counter_deanonymizer import (
+    InstanceCounterDeanonymizer,
+)
+from services.presidio.presidio_service import PresidioService
 
 logger = logging.getLogger(__name__)
 
 
 class PythonPresidioService(PresidioService):
-    """ Presidio Service class that uses both Presidio Analyzer and Anonymizer as Python libraries """
-    
+    """Presidio Service class that uses both Presidio Analyzer and Anonymizer as Python libraries."""
+
     def __init__(self):
         configuration = {
             "nlp_engine_name": "spacy",
@@ -28,26 +35,31 @@ class PythonPresidioService(PresidioService):
         nlp_engine = provider.create_engine()
 
         self.analyzer = AnalyzerEngine(
-            nlp_engine=nlp_engine,
-            supported_languages=["en", "nl", "es"]
+            nlp_engine=nlp_engine, supported_languages=["en", "nl", "es"]
         )
         self.anonymizer = AnonymizerEngine()
         self.anonymizer.add_anonymizer(InstanceCounterAnonymizer)
         self.deanonymizer = DeanonymizeEngine()
         self.deanonymizer.add_deanonymizer(InstanceCounterDeanonymizer)
 
-    def anonymize_text(self, session_id: str, text: str, language: str, entity_mappings: dict) -> Tuple[str, dict] :
-        """ Anonymize the given text using Presidio Analyzer and Anonymizer engines """
+    def anonymize_text(
+        self, session_id: str, text: str, language: str, entity_mappings: dict
+    ) -> Tuple[str, dict]:
+        """Anonymize the given text using Presidio Analyzer and Anonymizer engines."""
 
         logger.info(f"Anonymize text called with session_id: {session_id}")
         start_time = timer()
 
         try:
             results = self.analyzer.analyze(text=text, language=language)
-            logger.info(f"Analyze took {timer() - start_time:.3f} seconds for session_id: {session_id}")
+            logger.info(
+                f"Analyze took {timer() - start_time:.3f} seconds for session_id: {session_id}"
+            )
 
             anonymizer_start_time = timer()
-            anonymizer_entity_mapping = entity_mappings.copy() if entity_mappings is not None else dict()
+            anonymizer_entity_mapping = (
+                entity_mappings.copy() if entity_mappings is not None else dict()
+            )
             anonymized_result = self.anonymizer.anonymize(
                 text=text,
                 analyzer_results=results,
@@ -57,18 +69,24 @@ class PythonPresidioService(PresidioService):
                     )
                 },
             )
-            logger.info(f"Anonymize took {timer() - anonymizer_start_time:.3f} seconds for session_id: {session_id}")
+            logger.info(
+                f"Anonymize took {timer() - anonymizer_start_time:.3f} seconds for session_id: {session_id}"
+            )
 
             total_time = timer() - start_time
-            logger.info(f"Total processing time: {total_time:.3f} seconds for session_id: {session_id}")
+            logger.info(
+                f"Total processing time: {total_time:.3f} seconds for session_id: {session_id}"
+            )
 
             return anonymized_result.text, anonymizer_entity_mapping
-        except Exception as e:
+        except Exception:
             logger.exception(f"Error in anonymize_text for session_id {session_id}")
             raise
 
-    def deanonymize_text(self, session_id: str, text: str, entity_mappings: dict) -> str:
-        """ Deanonymize the given text using Presidio Analyzer and Anonymizer engines """
+    def deanonymize_text(
+        self, session_id: str, text: str, entity_mappings: dict
+    ) -> str:
+        """Deanonymize the given text using Presidio Analyzer and Anonymizer engines."""
 
         logger.info(f"Deanonymize text called with session_id: {session_id}")
         start_time = timer()
@@ -79,21 +97,26 @@ class PythonPresidioService(PresidioService):
             deanonymized = self.deanonymizer.deanonymize(
                 text=text,
                 entities=entities,
-                operators=
-                {"DEFAULT": OperatorConfig("entity_counter_deanonymizer", 
-                                        params={"entity_mapping": entity_mappings})}
+                operators={
+                    "DEFAULT": OperatorConfig(
+                        "entity_counter_deanonymizer",
+                        params={"entity_mapping": entity_mappings},
+                    )
+                },
             )
 
             total_time = timer() - start_time
-            logger.info(f"Total processing time: {total_time:.3f} seconds for session_id: {session_id}")
-            
+            logger.info(
+                f"Total processing time: {total_time:.3f} seconds for session_id: {session_id}"
+            )
+
             return deanonymized.text
-        except Exception as e:
+        except Exception:
             logger.exception(f"Error in deanonymize_text for session_id {session_id}")
             raise
 
     def get_entities(self, entity_mappings: dict, text: str) -> List[OperatorResult]:
-        """ Get the entities from the entity mappings """
+        """Get the entities from the entity mappings."""
 
         entities = []
         for entity_type, entity_mapping in entity_mappings.items():
@@ -104,6 +127,10 @@ class PythonPresidioService(PresidioService):
                     if start_index == -1:
                         break
                     end_index = start_index + len(entity_id)
-                    entities.append(OperatorResult(start_index, end_index, entity_type, entity_value, entity_id))
+                    entities.append(
+                        OperatorResult(
+                            start_index, end_index, entity_type, entity_value, entity_id
+                        )
+                    )
                     start_index += len(entity_id)
         return entities

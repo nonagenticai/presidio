@@ -1,7 +1,6 @@
-from presidio_analyzer import AnalyzerEngine, PatternRecognizer, Pattern
+from presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer
 
 if __name__ == "__main__":
-
     analyzer = AnalyzerEngine()
 
     text1 = "Professor Plum, in the Dining Room, with the candlestick"

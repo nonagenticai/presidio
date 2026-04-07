@@ -1,10 +1,6 @@
-import math
-import operator
 import os
-from functools import reduce
 
 import numpy as np
-
 from PIL import Image, ImageChops
 
 IMAGE_SIMILARITY_PROPORTION = 0.95

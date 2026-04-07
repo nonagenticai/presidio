@@ -1,15 +1,14 @@
 from typing import Dict, List
 
 import pytest
-
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import (
-    InvalidParamError,
-    RecognizerResult,
-    OperatorConfig,
-    PIIEntity,
-    OperatorResult,
     EngineResult,
+    InvalidParamError,
+    OperatorConfig,
+    OperatorResult,
+    PIIEntity,
+    RecognizerResult,
 )
 from presidio_anonymizer.operators import OperatorType
 
@@ -39,8 +38,7 @@ def test_given_empty_anonymziers_list_then_we_fall_to_default():
 def test_given_custom_anonymizer_then_we_manage_to_anonymize_successfully():
     engine = AnonymizerEngine()
     text = (
-        "Fake card number 4151 3217 6243 3448.com that "
-        "overlaps with nonexisting URL."
+        "Fake card number 4151 3217 6243 3448.com that overlaps with nonexisting URL."
     )
     analyzer_result = RecognizerResult("CREDIT_CARD", 17, 36, 0.8)
     analyzer_result2 = RecognizerResult("URL", 32, 40, 0.8)
@@ -171,8 +169,8 @@ def test_given_several_results_then_we_filter_them_and_get_correct_mocked_result
                 text="My name is BIP",
                 items=[
                     OperatorResult(11, 14, "PERSON", "BIP", "replace"),
-                ]
-            )
+                ],
+            ),
         ),
         (
             "My name is David   Jones",
@@ -184,8 +182,8 @@ def test_given_several_results_then_we_filter_them_and_get_correct_mocked_result
                 text="My name is BIP",
                 items=[
                     OperatorResult(11, 14, "PERSON", "BIP", "replace"),
-                ]
-            )
+                ],
+            ),
         ),
         (
             "My name is Jones, David",
@@ -198,8 +196,8 @@ def test_given_several_results_then_we_filter_them_and_get_correct_mocked_result
                 items=[
                     OperatorResult(11, 14, "PERSON", "BIP", "replace"),
                     OperatorResult(16, 19, "PERSON", "BIP", "replace"),
-                ]
-            )
+                ],
+            ),
         ),
         (
             "The phone book said: Jones 212-555-5555",
@@ -214,10 +212,10 @@ def test_given_several_results_then_we_filter_them_and_get_correct_mocked_result
                 items=[
                     OperatorResult(21, 24, "PERSON", "BIP", "replace"),
                     OperatorResult(25, 29, "PHONE NUMBER", "BEEP", "replace"),
-                ]
-            )
+                ],
+            ),
         ),
-    ]
+    ],
     # fmt: on
 )
 def test_given_sorted_analyzer_results_merge_entities_separated_by_white_space(

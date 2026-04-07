@@ -1,18 +1,16 @@
 ## Taken from https://github.com/microsoft/presidio/blob/main/docs/samples/python/flair_recognizer.py
 
 import logging
-from typing import Optional, List, Tuple, Set
-
-from presidio_analyzer import (
-    RecognizerResult,
-    EntityRecognizer,
-    AnalysisExplanation,
-)
-from presidio_analyzer.nlp_engine import NlpArtifacts
+from typing import List, Optional, Set, Tuple
 
 from flair.data import Sentence
 from flair.models import SequenceTagger
-
+from presidio_analyzer import (
+    AnalysisExplanation,
+    EntityRecognizer,
+    RecognizerResult,
+)
+from presidio_analyzer.nlp_engine import NlpArtifacts
 
 logger = logging.getLogger("presidio-analyzer")
 

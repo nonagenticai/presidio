@@ -1,6 +1,7 @@
-from presidio_analyzer import RecognizerResult
-from tests import assert_result_within_score_range
 import pytest
+from presidio_analyzer import RecognizerResult
+
+from tests import assert_result_within_score_range
 
 ENTITY_TYPE = "ANY_ENTITY"
 

@@ -1,17 +1,17 @@
 import re
 
 import pytest
-
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import (
     InvalidParamError,
-    RecognizerResult,
     OperatorConfig,
+    RecognizerResult,
 )
 from presidio_anonymizer.operators import AESCipher, OperatorType, Redact
+
 from tests.mock_operators import (
-    create_reverser_operator,
     create_instance_counter_anonymizer,
+    create_reverser_operator,
 )
 
 
@@ -158,36 +158,41 @@ def test_given_intersecting_the_same_entities_then_we_anonymize_correctly():
     # fmt: off
     "hash_type,result",
     [
-        ("sha256",
-         '{"text": "hello world, my name is '
-         '01332c876518a793b7c1b8dfaf6d4b404ff5db09b21c6627ca59710cc24f696a. '
-         'My number is: 230451ebc7df208f1d5227aceaebf6d8e9'
-         '36f17d74330a5a5c5cbbd4e41d0d57", "items": [{"start": 104, "end": 168, '
-         '"entity_type": "PHONE_NUMBER", "text": "230451ebc7df208f1d5227aceaebf6d8e'
-         '936f17d74330a5a5c5cbbd4e41d0d57", "operator": "hash"}, {"start": 24, '
-         '"end": 88, "entity_type": "NAME", "text": "01332c876518a793b7c1b8dfaf6d4b404f'
-         'f5db09b21c6627ca59710cc24f696a", "operator": "hash"}]}'),
-        ("sha512",
-         '{"text": "hello world, my name is 508789e7c17beebf2f17e611b43920792b692a'
-         'd9ae53f9be3a947b04fbf820f40d57f42864a20e7121180e9467fda3fa2480e50c0da15244b'
-         '6153abe2509362c. My number is: 8ea244bbf71264237db23324b3ff83f6ef6601c9da08a'
-         'f42122f992ec45d757c3efd953185b2590e4542aa1ca3637fa8935ebff2b43af0ea1245e7c84'
-         '3fbebdc", "items": [{"start": 168, "end": 296, "entity_type": "PHONE_NUMBER",'
-         ' "text": "8ea244bbf71264237db23324b3ff83f6ef6601c9da08af42122f992ec45d757c'
-         '3efd953185b2590e4542aa1ca3637fa8935ebff2b43af0ea1245e7c843fbebdc", '
-         '"operator": "hash"}, {"start": 24, "end": 152, "entity_type": "NAME", '
-         '"text": "508789e7c17beebf2f17e611b43920792b692ad9ae53f9be3a947b04fbf820f40'
-         'd57f42864a20e7121180e9467fda3fa2480e50c0da15244b6153abe2509362c", '
-         '"operator": "hash"}]}'),
-        ("",
-         '{"text": "hello world, my name is 01332c876518a793b7c1b8dfaf6d4b404ff5db09b'
-         '21c6627ca59710cc24f696a. My number is: 230451ebc7df208f1d5227aceaebf6d8e936f'
-         '17d74330a5a5c5cbbd4e41d0d57", "items": [{"start": 104, "end": 168, '
-         '"entity_type": "PHONE_NUMBER", "text": "230451ebc7df208f1d5227aceaebf6d8e936'
-         'f17d74330a5a5c5cbbd4e41d0d57", "operator": "hash"}, {"start": 24, '
-         '"end": 88, "entity_type": "NAME", "text": "01332c876518a793b7c1b8dfaf6d4b404'
-         'ff5db09b21c6627ca59710cc24f696a", "operator": "hash"}]}'
-         )
+        (
+            "sha256",
+            '{"text": "hello world, my name is '
+            "01332c876518a793b7c1b8dfaf6d4b404ff5db09b21c6627ca59710cc24f696a. "
+            "My number is: 230451ebc7df208f1d5227aceaebf6d8e9"
+            '36f17d74330a5a5c5cbbd4e41d0d57", "items": [{"start": 104, "end": 168, '
+            '"entity_type": "PHONE_NUMBER", "text": "230451ebc7df208f1d5227aceaebf6d8e'
+            '936f17d74330a5a5c5cbbd4e41d0d57", "operator": "hash"}, {"start": 24, '
+            '"end": 88, "entity_type": "NAME", "text": "01332c876518a793b7c1b8dfaf6d4b404f'
+            'f5db09b21c6627ca59710cc24f696a", "operator": "hash"}]}',
+        ),
+        (
+            "sha512",
+            '{"text": "hello world, my name is 508789e7c17beebf2f17e611b43920792b692a'
+            "d9ae53f9be3a947b04fbf820f40d57f42864a20e7121180e9467fda3fa2480e50c0da15244b"
+            "6153abe2509362c. My number is: 8ea244bbf71264237db23324b3ff83f6ef6601c9da08a"
+            "f42122f992ec45d757c3efd953185b2590e4542aa1ca3637fa8935ebff2b43af0ea1245e7c84"
+            '3fbebdc", "items": [{"start": 168, "end": 296, "entity_type": "PHONE_NUMBER",'
+            ' "text": "8ea244bbf71264237db23324b3ff83f6ef6601c9da08af42122f992ec45d757c'
+            '3efd953185b2590e4542aa1ca3637fa8935ebff2b43af0ea1245e7c843fbebdc", '
+            '"operator": "hash"}, {"start": 24, "end": 152, "entity_type": "NAME", '
+            '"text": "508789e7c17beebf2f17e611b43920792b692ad9ae53f9be3a947b04fbf820f40'
+            'd57f42864a20e7121180e9467fda3fa2480e50c0da15244b6153abe2509362c", '
+            '"operator": "hash"}]}',
+        ),
+        (
+            "",
+            '{"text": "hello world, my name is 01332c876518a793b7c1b8dfaf6d4b404ff5db09b'
+            "21c6627ca59710cc24f696a. My number is: 230451ebc7df208f1d5227aceaebf6d8e936f"
+            '17d74330a5a5c5cbbd4e41d0d57", "items": [{"start": 104, "end": 168, '
+            '"entity_type": "PHONE_NUMBER", "text": "230451ebc7df208f1d5227aceaebf6d8e936'
+            'f17d74330a5a5c5cbbd4e41d0d57", "operator": "hash"}, {"start": 24, '
+            '"end": 88, "entity_type": "NAME", "text": "01332c876518a793b7c1b8dfaf6d4b404'
+            'ff5db09b21c6627ca59710cc24f696a", "operator": "hash"}]}',
+        ),
     ],
     # fmt: on
 )
@@ -312,12 +317,11 @@ def test_operator_metadata_returns_updated_results(three_person_analyzer_results
         {
             "DEFAULT": OperatorConfig(
                 "entity_counter", {"entity_mapping": entity_mapping}
-
             )
         },
     )
 
-    pattern = r'<PERSON_\d+>'
+    pattern = r"<PERSON_\d+>"
     assert len(re.findall(pattern, actual_anonymize_result.text)) == 3
     for results in actual_anonymize_result.items:
         assert results.operator == "entity_counter"

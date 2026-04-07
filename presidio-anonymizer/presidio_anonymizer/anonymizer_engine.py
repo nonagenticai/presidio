@@ -156,7 +156,7 @@ class AnonymizerEngine(EngineBase):
                 tmp_analyzer_results.append(result)
             else:
                 self.logger.debug(
-                    f"removing element {result} from " f"results list due to merge"
+                    f"removing element {result} from results list due to merge"
                 )
 
         unique_text_metadata_elements = []

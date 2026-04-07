@@ -1,6 +1,6 @@
 import pytest
-
 from presidio_analyzer.predefined_recognizers import ItDriverLicenseRecognizer
+
 from tests import assert_result_within_score_range
 
 
@@ -19,16 +19,39 @@ def entities():
     [
         # fmt: off
         # Test with one Driver License
-        ("AA0123456B", 1, ((0, 10),), ((0.1, 0.4),),),
+        (
+            "AA0123456B",
+            1,
+            ((0, 10),),
+            ((0.1, 0.4),),
+        ),
         # Test with two Driver License
-        ("AA0123456B and AA0123456B", 
-        2,
-        ((0, 10), (15, 25),),
-        ((0.1, 0.4), (0.1, 0.4),),),
+        (
+            "AA0123456B and AA0123456B",
+            2,
+            (
+                (0, 10),
+                (15, 25),
+            ),
+            (
+                (0.1, 0.4),
+                (0.1, 0.4),
+            ),
+        ),
         # Test with old Driver License
-        ("U1H00A000B", 1, ((0, 10),), ((0.1, 0.4),),),
+        (
+            "U1H00A000B",
+            1,
+            ((0, 10),),
+            ((0.1, 0.4),),
+        ),
         # Test with invalid Driver License
-        ("990123456B", 0, (), (),),
+        (
+            "990123456B",
+            0,
+            (),
+            (),
+        ),
         # fmt: on
     ],
 )

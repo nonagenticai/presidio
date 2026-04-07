@@ -1,8 +1,6 @@
-import base64
 import os
 
 import pytest
-
 from common.assertions import equal_json_strings
 from common.methods import redact
 

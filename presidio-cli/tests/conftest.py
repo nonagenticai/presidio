@@ -1,10 +1,10 @@
-import pytest
-import tempfile
 import os
+import tempfile
 
+import pytest
 import spacy
-from spacy.cli import download
 from presidio_cli.config import PresidioCLIConfig
+from spacy.cli import download
 
 
 def build_temp_workspace(files):
@@ -42,10 +42,14 @@ def temp_workspace():
             "was mailed to 123 Any Street, Seattle, WA 98109.\n",
             # non-ASCII chars
             "non-ascii/éçäγλνπ¥/utf-8": (
-                "---\n" "- hétérogénéité\n" "# 19.99 €\n" "- お早う御座います。\n" "# الأَبْجَدِيَّة العَرَبِيَّة\n"
+                "---\n"
+                "- hétérogénéité\n"
+                "# 19.99 €\n"
+                "- お早う御座います。\n"
+                "# الأَبْجَدِيَّة العَرَبِيَّة\n"
             ).encode("utf-8"),
             # dos line endings yaml
-            "dos.yml": "---\r\n" "credit_card: 122000000000003",
+            "dos.yml": "---\r\ncredit_card: 122000000000003",
         }
     )
     with open(os.path.join(tmpdir, "binary_file"), "wb") as fout:

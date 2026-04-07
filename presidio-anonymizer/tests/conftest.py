@@ -1,7 +1,6 @@
 from typing import Dict, Type
 
 import pytest
-
 from presidio_anonymizer.entities import RecognizerResult
 from presidio_anonymizer.operators import Operator, OperatorType
 

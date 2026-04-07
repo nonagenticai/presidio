@@ -1,8 +1,8 @@
+from faker import Faker
+from faker.providers import internet
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
-from faker import Faker
-from faker.providers import internet
 
 
 def reverse_string(x):

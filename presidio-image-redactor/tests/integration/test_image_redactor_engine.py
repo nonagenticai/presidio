@@ -1,10 +1,12 @@
 from typing import Callable
 
 import pytest
-
-from presidio_image_redactor import ImageRedactorEngine, ImageAnalyzerEngine, DocumentIntelligenceOCR
-
-from tests.integration.methods import get_resource_image, compare_images, image_sim
+from presidio_image_redactor import (
+    DocumentIntelligenceOCR,
+    ImageAnalyzerEngine,
+    ImageRedactorEngine,
+)
+from tests.integration.methods import compare_images, get_resource_image, image_sim
 
 red_fill = (255, 0, 0)
 
@@ -21,7 +23,7 @@ def mock_di_engine():
     return ImageRedactorEngine(image_analyzer_engine=ia_engine)
 
 
-from tests.engine_test_utils import must_succeed, allow_failure
+from tests.engine_test_utils import allow_failure, must_succeed
 
 
 def all_engines_required():
@@ -30,7 +32,9 @@ def all_engines_required():
 
 
 @pytest.mark.parametrize("engine_builder", all_engines_required())
-def test_given_image_with_text_and_fill_then_text_is_greyed_out(engine_builder: Callable):
+def test_given_image_with_text_and_fill_then_text_is_greyed_out(
+    engine_builder: Callable,
+):
     # Image with PII entities
     image = get_resource_image("ocr_test.png")
     result_image = get_resource_image("ocr_test_redacted.png")
@@ -39,18 +43,24 @@ def test_given_image_with_text_and_fill_then_text_is_greyed_out(engine_builder: 
 
 
 @pytest.mark.parametrize("engine_builder", all_engines_required())
-def test_given_image_with_text_and_matrix_fill_then_text_is_colored_out(engine_builder: Callable):
+def test_given_image_with_text_and_matrix_fill_then_text_is_colored_out(
+    engine_builder: Callable,
+):
     # Image with PII entities
     image = get_resource_image("ocr_test.png")
 
     redacted_image = engine_builder().redact(image, red_fill)
     expected_result_image = get_resource_image("ocr_test_redacted_matrix.png")
     # The redacted image is closer to the expected result than the original image
-    assert image_sim(redacted_image, expected_result_image) > image_sim(redacted_image, image)
+    assert image_sim(redacted_image, expected_result_image) > image_sim(
+        redacted_image, image
+    )
 
 
 @pytest.mark.parametrize("engine_builder", all_engines_required())
-def test_given_image_without_text_and_fill_then_image_does_not_change(engine_builder: Callable):
+def test_given_image_without_text_and_fill_then_image_does_not_change(
+    engine_builder: Callable,
+):
     # Image without PII entities
     image = get_resource_image("no_ocr.jpg")
     redacted_image = engine_builder().redact(image, red_fill)
@@ -58,7 +68,9 @@ def test_given_image_without_text_and_fill_then_image_does_not_change(engine_bui
 
 
 @pytest.mark.parametrize("engine_builder", all_engines_required())
-def test_given_two_word_entity_then_no_extra_bounding_box_appears(engine_builder: Callable):
+def test_given_two_word_entity_then_no_extra_bounding_box_appears(
+    engine_builder: Callable,
+):
     """Tests bounding boxes for multiword entities.
 
     Given a PII entity is identified,
@@ -77,15 +89,19 @@ def test_given_two_word_entity_then_no_extra_bounding_box_appears(engine_builder
 
 
 @pytest.mark.parametrize("engine_builder", all_engines_required())
-def test_given_analzyer_kwargs_then_different_entities_are_redacted(engine_builder: Callable):
+def test_given_analzyer_kwargs_then_different_entities_are_redacted(
+    engine_builder: Callable,
+):
     """
     Tests that kwargs such as entities and score_threshold are available for
-    redact method
+    redact method.
     """
     # Image with PII entities
     image = get_resource_image("kwargs_test.jpg")
     redacted_image_no_args = engine_builder().redact(image)
-    redacted_image_entities_args = ImageRedactorEngine().redact(image, entities=["PERSON", "LOCATION"])
+    redacted_image_entities_args = ImageRedactorEngine().redact(
+        image, entities=["PERSON", "LOCATION"]
+    )
     redacted_image_score_args = ImageRedactorEngine().redact(image, score_threshold=1)
     assert not compare_images(redacted_image_no_args, redacted_image_entities_args)
     assert not compare_images(redacted_image_no_args, redacted_image_score_args)

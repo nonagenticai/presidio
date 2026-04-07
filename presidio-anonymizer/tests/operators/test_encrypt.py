@@ -1,9 +1,8 @@
 from unittest import mock
 
 import pytest
-
-from presidio_anonymizer.operators import Encrypt, AESCipher
 from presidio_anonymizer.entities import InvalidParamError
+from presidio_anonymizer.operators import AESCipher, Encrypt
 
 
 @mock.patch.object(AESCipher, "encrypt")
@@ -20,13 +19,14 @@ def test_given_anonymize_then_aes_encrypt_called_and_its_result_is_returned(
 
 @mock.patch.object(AESCipher, "encrypt")
 def test_given_anonymize_with_bytes_key_then_aes_encrypt_result_is_returned(
-        mock_encrypt,
+    mock_encrypt,
 ):
     expected_anonymized_text = "encrypted_text"
     mock_encrypt.return_value = expected_anonymized_text
 
-    anonymized_text = Encrypt().operate(text="text",
-                                        params={"key": b'1111111111111111'})
+    anonymized_text = Encrypt().operate(
+        text="text", params={"key": b"1111111111111111"}
+    )
 
     assert anonymized_text == expected_anonymized_text
 
@@ -36,7 +36,7 @@ def test_given_verifying_an_valid_length_key_no_exceptions_raised():
 
 
 def test_given_verifying_an_valid_length_bytes_key_no_exceptions_raised():
-    Encrypt().validate(params={"key": b'1111111111111111'})
+    Encrypt().validate(params={"key": b"1111111111111111"})
 
 
 def test_given_verifying_an_invalid_length_key_then_ipe_raised():

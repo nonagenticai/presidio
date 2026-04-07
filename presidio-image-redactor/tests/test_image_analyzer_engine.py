@@ -1,16 +1,18 @@
-import pytest
-from presidio_analyzer import RecognizerResult, AnalyzerEngine, PatternRecognizer, Pattern
-from presidio_analyzer.recognizer_registry import RecognizerRegistry
+from typing import List
 
-from presidio_image_redactor import ImageAnalyzerEngine
-from presidio_image_redactor.entities import ImageRecognizerResult
-
-import PIL
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-
-from typing import List
+import PIL
+import pytest
+from presidio_analyzer import (
+    AnalyzerEngine,
+    Pattern,
+    PatternRecognizer,
+    RecognizerResult,
+)
+from presidio_analyzer.recognizer_registry import RecognizerRegistry
+from presidio_image_redactor import ImageAnalyzerEngine
+from presidio_image_redactor.entities import ImageRecognizerResult
 
 
 def test_given_valid_ocr_and_entities_then_map_analyzer_returns_correct_len_and_output(
@@ -27,7 +29,9 @@ def test_given_valid_ocr_and_entities_then_map_analyzer_returns_correct_len_and_
     assert expected_result == mapped_entities
 
 
-def test_given_allow_list_then_map_analyzer_results_contain_allowed_words(get_ocr_analyzer_results):
+def test_given_allow_list_then_map_analyzer_results_contain_allowed_words(
+    get_ocr_analyzer_results,
+):
     ocr_result, text, recognizer_result = get_ocr_analyzer_results
     mapped_entities = ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(
         recognizer_result, ocr_result, text, allow_list=["Katie", "Cromley."]
@@ -40,9 +44,21 @@ def test_given_empty_ocr_entities_lists_then_map_analyzer_results_returns_empty_
     get_ocr_analyzer_results,
 ):
     ocr_result, text, recognizer_result = get_ocr_analyzer_results
-    assert ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes([], {}, "", []) == []
-    assert ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes([], ocr_result, text, []) == []
-    assert ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(recognizer_result, {}, "", []) == []
+    assert (
+        ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes([], {}, "", []) == []
+    )
+    assert (
+        ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(
+            [], ocr_result, text, []
+        )
+        == []
+    )
+    assert (
+        ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(
+            recognizer_result, {}, "", []
+        )
+        == []
+    )
 
 
 def test_given_wrong_keys_in_ocr_dict_then_map_analyzer_results_returns_exception(
@@ -51,7 +67,9 @@ def test_given_wrong_keys_in_ocr_dict_then_map_analyzer_results_returns_exceptio
     ocr_result, text, recognizer_result = get_ocr_analyzer_results
     ocr_result = {"words": ["John"], "level": [0]}
     with pytest.raises(KeyError):
-        ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(recognizer_result, ocr_result, "", [])
+        ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(
+            recognizer_result, ocr_result, "", []
+        )
 
 
 def test_given_repeat_entities_then_map_analyzer_results_returns_correct_no_of_bboxes(
@@ -63,7 +81,14 @@ def test_given_repeat_entities_then_map_analyzer_results_returns_correct_no_of_b
     recognizer_result.append(RecognizerResult("PERSON", 1, 6, 0.85))
     text = " Katie Interiors was created by Katie  Cromley."
 
-    assert len(ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(recognizer_result, ocr_result, text, [])) == 3
+    assert (
+        len(
+            ImageAnalyzerEngine.map_analyzer_results_to_bounding_boxes(
+                recognizer_result, ocr_result, text, []
+            )
+        )
+        == 3
+    )
 
 
 def test_given_word_has_entity_but_not_entity_then_map_entity_correct_bboxes_and_len(
@@ -119,7 +144,9 @@ def test_given_dif_len_entities_then_map_analyzer_returns_correct_outputand_len(
     "ocr_threshold, expected_length",
     [(-1, 9), (50, 7), (80, 2), (100, 0)],
 )
-def test_threshold_ocr_result_returns_expected_results(image_analyzer_engine, ocr_threshold, expected_length):
+def test_threshold_ocr_result_returns_expected_results(
+    image_analyzer_engine, ocr_threshold, expected_length
+):
     # Assign
     ocr_result = {}
     ocr_result["text"] = [
@@ -140,7 +167,9 @@ def test_threshold_ocr_result_returns_expected_results(image_analyzer_engine, oc
     ocr_result["conf"] = [-1, 99.5, 92.3, 42.7, 66.1, 51.2, 79.7, 64.0, 70.3]
 
     # Act
-    test_filtered = image_analyzer_engine.threshold_ocr_result(ocr_result, ocr_threshold)
+    test_filtered = image_analyzer_engine.threshold_ocr_result(
+        ocr_result, ocr_threshold
+    )
 
     # Assert
     assert len(test_filtered["conf"]) == expected_length
@@ -148,7 +177,11 @@ def test_threshold_ocr_result_returns_expected_results(image_analyzer_engine, oc
 
 def test_remove_space_boxes_happy_path(image_analyzer_engine):
     # Arrange
-    ocr_result = {"text": ["John", " ", "Doe", "", "  "], "left": [100, 0, 275, 415, 999], "top": [5, 315, 900, 0, 17]}
+    ocr_result = {
+        "text": ["John", " ", "Doe", "", "  "],
+        "left": [100, 0, 275, 415, 999],
+        "top": [5, 315, 900, 0, 17],
+    }
 
     # Act
     test_results = image_analyzer_engine.remove_space_boxes(ocr_result)
@@ -169,7 +202,9 @@ def test_remove_space_boxes_happy_path(image_analyzer_engine):
     ],
 )
 def test_check_for_allow_list_happy_path(
-    image_analyzer_engine: ImageAnalyzerEngine, text_analyzer_kwargs: dict, expected_allow_list: list
+    image_analyzer_engine: ImageAnalyzerEngine,
+    text_analyzer_kwargs: dict,
+    expected_allow_list: list,
 ):
     # Act
     test_allow_list = image_analyzer_engine._check_for_allow_list(text_analyzer_kwargs)
@@ -200,7 +235,10 @@ def test_fig2img_happy_path(image_analyzer_engine: ImageAnalyzerEngine):
                 {"left": 3, "top": 17, "width": 14, "height": 8},
                 {"left": 100, "top": 70, "width": 40, "height": 40},
             ],
-            [{"left": 50, "top": 0, "width": 30, "height": 10}, {"left": 3, "top": 17, "width": 14, "height": 8}],
+            [
+                {"left": 50, "top": 0, "width": 30, "height": 10},
+                {"left": 3, "top": 17, "width": 14, "height": 8},
+            ],
             [
                 {"left": 50, "top": 0, "width": 30, "height": 10, "is_PII": True},
                 {"left": 3, "top": 17, "width": 14, "height": 8, "is_PII": True},
@@ -226,7 +264,10 @@ def test_fig2img_happy_path(image_analyzer_engine: ImageAnalyzerEngine):
                 {"left": 3, "top": 17, "width": 14, "height": 8},
                 {"left": 100, "top": 70, "width": 40, "height": 40},
             ],
-            [{"left": 49, "top": 0, "width": 30, "height": 10}, {"left": 13, "top": 17, "width": 14, "height": 8}],
+            [
+                {"left": 49, "top": 0, "width": 30, "height": 10},
+                {"left": 13, "top": 17, "width": 14, "height": 8},
+            ],
             [
                 {"left": 50, "top": 0, "width": 30, "height": 10, "is_PII": False},
                 {"left": 3, "top": 17, "width": 14, "height": 8, "is_PII": False},
@@ -294,7 +335,10 @@ def test_get_pii_bboxes_happy_path(
     ],
 )
 def test_add_custom_bboxes_happy_path(
-    image_analyzer_engine: ImageAnalyzerEngine, bboxes: List[dict], show_text_annotation: bool, use_greyscale_cmap: bool
+    image_analyzer_engine: ImageAnalyzerEngine,
+    bboxes: List[dict],
+    show_text_annotation: bool,
+    use_greyscale_cmap: bool,
 ):
     """Ideal version of this test would check for pixel color
     at the bbox positions, but the returned image includes
@@ -311,7 +355,9 @@ def test_add_custom_bboxes_happy_path(
     is_any_PII = True in [bbox["is_PII"] for bbox in bboxes]
 
     # Act
-    test_img = image_analyzer_engine.add_custom_bboxes(img, bboxes, show_text_annotation, use_greyscale_cmap)
+    test_img = image_analyzer_engine.add_custom_bboxes(
+        img, bboxes, show_text_annotation, use_greyscale_cmap
+    )
     test_img_arr = np.array(test_img)
 
     def compare_color(actual_pixels, expected_color, threshold=10):
@@ -347,7 +393,7 @@ def test_check_analyze_supports_language_param(get_mock_png):
     """Test that the method analyze from class ImageAnalyzerEngine
     supports the language parameter.
     Before there where a bug:
-        "TypeError: presidio_analyzer.analyzer_engine.AnalyzerEngine.analyze() got multiple values for keyword argument 'language'"
+        "TypeError: presidio_analyzer.analyzer_engine.AnalyzerEngine.analyze() got multiple values for keyword argument 'language'".
 
     :param get_mock_png: The mock PNG image
     """
@@ -364,11 +410,17 @@ def test_use_other_language_in_analyze(get_dummy_nlp_engine, get_mock_png):
     """
     # Create a dummy recognizer. It's necessary at least one recognizer to use the AnalyzerEngine
     pattern = Pattern(name="character_a_pattern", regex=r"####-DUMMY-####", score=1.0)
-    dummy_recognizer = PatternRecognizer("DUMMY", patterns=[pattern], supported_language="pt")
-    registry = RecognizerRegistry(recognizers=[dummy_recognizer], supported_languages=["pt"])
+    dummy_recognizer = PatternRecognizer(
+        "DUMMY", patterns=[pattern], supported_language="pt"
+    )
+    registry = RecognizerRegistry(
+        recognizers=[dummy_recognizer], supported_languages=["pt"]
+    )
 
     # Create an AnalyzerEngine to suport another language
-    analyzer_engine = AnalyzerEngine(nlp_engine=get_dummy_nlp_engine, registry=registry, supported_languages=["pt"])
+    analyzer_engine = AnalyzerEngine(
+        nlp_engine=get_dummy_nlp_engine, registry=registry, supported_languages=["pt"]
+    )
     # Analyze the image using other language
     redacted = ImageAnalyzerEngine(analyzer_engine=analyzer_engine).analyze(
         get_mock_png, language="pt", entities=["DUMMY"]

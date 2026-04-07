@@ -1,5 +1,4 @@
 import pytest
-
 from presidio_anonymizer.entities import InvalidParamError
 from presidio_anonymizer.services.validators import (
     validate_parameter,
@@ -95,9 +94,7 @@ def test_given_parameter_is_bad_typed_then_ipe_raised():
 
 
 def test_given_actual_parameter_is_non_json_typed_then_ipe_raised_with_general_error():
-    with pytest.raises(
-        InvalidParamError, match="Invalid parameter value for 'name'."
-    ):
+    with pytest.raises(InvalidParamError, match="Invalid parameter value for 'name'."):
         validate_parameter(
             parameter_value="1", parameter_name="name", parameter_type=tuple
         )

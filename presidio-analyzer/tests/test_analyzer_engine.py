@@ -1,30 +1,27 @@
 import copy
+import re
 from abc import ABC
 from contextlib import nullcontext
 from typing import List, Optional
-import re
 
 import pytest
-
 from presidio_analyzer import (
     AnalyzerEngine,
-    PatternRecognizer,
-    Pattern,
-    RecognizerRegistry,
     EntityRecognizer,
+    Pattern,
+    PatternRecognizer,
+    RecognizerRegistry,
     RecognizerResult,
 )
 from presidio_analyzer.nlp_engine import (
     NlpArtifacts,
     SpacyNlpEngine,
 )
-from presidio_analyzer.recognizer_registry import (
-    RecognizerRegistryProvider
-)
+from presidio_analyzer.recognizer_registry import RecognizerRegistryProvider
 
 # noqa: F401
 from tests import assert_result
-from tests.mocks import NlpEngineMock, AppTracerMock, RecognizerRegistryMock
+from tests.mocks import AppTracerMock, NlpEngineMock, RecognizerRegistryMock
 
 
 @pytest.fixture(scope="module")
@@ -87,6 +84,7 @@ def test_when_analyze_with_predefined_recognizers_then_return_results(
     assert len(results) == 1
     assert_result(results[0], "CREDIT_CARD", 14, 33, max_score)
 
+
 @pytest.mark.parametrize(
     "registry_config,analyzer_lang,expectation",
     [
@@ -95,21 +93,26 @@ def test_when_analyze_with_predefined_recognizers_then_return_results(
         ({"supported_languages": ["es", "de"]}, None, pytest.raises(ValueError)),
         ({"supported_languages": ["es", "de"]}, ["de", "es"], nullcontext()),
         (None, None, nullcontext()),
-    ]
+    ],
 )
-def test_when_analyze_with_unsupported_language_must_match(registry_config, analyzer_lang, expectation):
+def test_when_analyze_with_unsupported_language_must_match(
+    registry_config, analyzer_lang, expectation
+):
     with expectation:
-        registry = RecognizerRegistryProvider(registry_configuration=registry_config).create_recognizer_registry()
+        registry = RecognizerRegistryProvider(
+            registry_configuration=registry_config
+        ).create_recognizer_registry()
         AnalyzerEngine(
             registry=registry,
             supported_languages=analyzer_lang,
             nlp_engine=NlpEngineMock(),
         )
 
-def test_when_analyze_with_defaults_success(
-):
+
+def test_when_analyze_with_defaults_success():
     registry = RecognizerRegistryProvider().create_recognizer_registry()
     AnalyzerEngine(registry=registry)
+
 
 def test_when_analyze_with_multiple_predefined_recognizers_then_succeed(
     loaded_registry, unit_test_guid, spacy_nlp_engine, max_score
@@ -273,7 +276,7 @@ def test_when_regex_allow_list_specified(loaded_analyzer_engine):
     assert_result(results[0], "URL", 0, 8, 0.5)
 
     results = loaded_analyzer_engine.analyze(
-        text=text, language="en", allow_list=["bing"], allow_list_match = "regex"
+        text=text, language="en", allow_list=["bing"], allow_list_match="regex"
     )
     assert len(results) == 2
     assert text[results[0].start : results[0].end] == "microsoft.com"
@@ -291,13 +294,15 @@ def test_when_regex_allow_list_specified_but_none_in_file(loaded_analyzer_engine
     assert_result(results[0], "URL", 0, 8, 0.5)
 
     results = loaded_analyzer_engine.analyze(
-        text=text, language="en", allow_list=["microsoft"], allow_list_match = "regex"
+        text=text, language="en", allow_list=["microsoft"], allow_list_match="regex"
     )
     assert len(results) == 1
     assert_result(results[0], "URL", 0, 8, 0.5)
 
 
-def test_when_regex_allow_list_specified_multiple_items_with_missing_flags(loaded_analyzer_engine):
+def test_when_regex_allow_list_specified_multiple_items_with_missing_flags(
+    loaded_analyzer_engine,
+):
     text = "bing.com is his favorite website, microsoft.com is his second favorite, azure.com is his third favorite"
     results = loaded_analyzer_engine.analyze(
         text=text,
@@ -307,7 +312,10 @@ def test_when_regex_allow_list_specified_multiple_items_with_missing_flags(loade
     assert_result(results[0], "URL", 0, 8, 0.5)
 
     results = loaded_analyzer_engine.analyze(
-        text=text, language="en", allow_list=["bing", "microsoft"], allow_list_match = "regex", 
+        text=text,
+        language="en",
+        allow_list=["bing", "microsoft"],
+        allow_list_match="regex",
     )
     assert len(results) == 1
     assert text[results[0].start : results[0].end] == "azure.com"
@@ -323,12 +331,20 @@ def test_when_regex_allow_list_specified_with_regex_flags(loaded_analyzer_engine
     assert_result(results[0], "URL", 0, 8, 0.5)
 
     results = loaded_analyzer_engine.analyze(
-        text=text, language="en", allow_list=["BING", "MICROSOFT", "AZURE"], allow_list_match = "regex", regex_flags=0
+        text=text,
+        language="en",
+        allow_list=["BING", "MICROSOFT", "AZURE"],
+        allow_list_match="regex",
+        regex_flags=0,
     )
     assert len(results) == 3
 
     results = loaded_analyzer_engine.analyze(
-        text=text, language="en", allow_list=["BING", "MICROSOFT", "AZURE"], allow_list_match = "regex", regex_flags=re.IGNORECASE
+        text=text,
+        language="en",
+        allow_list=["BING", "MICROSOFT", "AZURE"],
+        allow_list_match="regex",
+        regex_flags=re.IGNORECASE,
     )
     assert len(results) == 0
 
@@ -421,13 +437,13 @@ def test_when_entities_is_none_then_return_all_fields(loaded_registry):
 
 
 def test_when_entities_is_none_all_recognizers_loaded_then_return_all_fields(
-        spacy_nlp_engine,
+    spacy_nlp_engine,
 ):
     analyze_engine = AnalyzerEngine(
         registry=RecognizerRegistry(), nlp_engine=spacy_nlp_engine
     )
     threshold = 0
-    text = "My name is Sharon and I live in Seattle." "Domain: microsoft.com "
+    text = "My name is Sharon and I live in Seattle.Domain: microsoft.com "
     response = analyze_engine.analyze(
         text=text, score_threshold=threshold, language="en"
     )
@@ -755,7 +771,9 @@ def test_entities_filter_for_ad_hoc_removes_recognizer(loaded_analyzer_engine):
     assert "MR" not in [resp.entity_type for resp in responses2]
 
 
-def test_ad_hoc_with_context_support_higher_confidence(spacy_nlp_engine, zip_code_recognizer):
+def test_ad_hoc_with_context_support_higher_confidence(
+    spacy_nlp_engine, zip_code_recognizer
+):
     text = "Mr. John Smith's zip code is 10023"
     analyzer_engine = AnalyzerEngine(nlp_engine=spacy_nlp_engine)
 
@@ -838,7 +856,9 @@ def test_when_recognizer_doesnt_return_recognizer_name_no_exception(spacy_nlp_en
     )
 
 
-def test_when_recognizer_overrides_enhance_score_then_it_get_boosted_once(spacy_nlp_engine):
+def test_when_recognizer_overrides_enhance_score_then_it_get_boosted_once(
+    spacy_nlp_engine,
+):
     class MockRecognizer(EntityRecognizer, ABC):
         def analyze(self, text: str, entities: List[str], nlp_artifacts: NlpArtifacts):
             return [

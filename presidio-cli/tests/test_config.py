@@ -1,12 +1,17 @@
 import os
-import pytest
 
+import pytest
 from presidio_cli import config
 
 
 def test_parse_config():
     new = config.PresidioCLIConfig(
-        "entities:\n" "  - PERSON\n" "  - IP_ADDRESS\n" "  - CREDIT_CARD\n" "threshold: 1.0\n" "locale: en_US.UTF-8\n"
+        "entities:\n"
+        "  - PERSON\n"
+        "  - IP_ADDRESS\n"
+        "  - CREDIT_CARD\n"
+        "threshold: 1.0\n"
+        "locale: en_US.UTF-8\n"
     )
 
     assert new.entities == ["PERSON", "IP_ADDRESS", "CREDIT_CARD"]
@@ -31,7 +36,7 @@ def test_not_dict():
 
 def test_unknown_entity():
     with pytest.raises(config.PresidioCLIConfigError) as excinfo:
-        config.PresidioCLIConfig("entities:\n" "  - NOTEXISTS\n")
+        config.PresidioCLIConfig("entities:\n  - NOTEXISTS\n")
     assert "invalid config: no such entity NOTEXISTS" in str(excinfo.value)
 
 
@@ -57,7 +62,7 @@ def test_invalid_value(temp_workspace):
 
 
 def test_run_with_ignored_path(temp_workspace):
-    new = config.PresidioCLIConfig("ignore: |\n" "  .git\n" "  s/*\n" "  dos.yml\n")
+    new = config.PresidioCLIConfig("ignore: |\n  .git\n  s/*\n  dos.yml\n")
     assert new.is_file_ignored("./dos.yml")
     assert new.is_file_ignored("./.git/hooks/README.sample")
     assert not new.is_file_ignored("notignored")

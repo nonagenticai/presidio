@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import InVehicleRegistrationRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import InVehicleRegistrationRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -24,9 +24,18 @@ def entities():
         ("MCX1243", 1, (0, 7), 0.2),
         ("I15432", 1, (0, 6), 0.01),
         ("DL3CJI0001", 1, (0, 10), 1),
-        ("ABNE123456", 0, (), (),),
-        ("My Bike's registration number is OD02BA2341 with a lot of text beyond",
-         1, (33, 43), 1),
+        (
+            "ABNE123456",
+            0,
+            (),
+            (),
+        ),
+        (
+            "My Bike's registration number is OD02BA2341 with a lot of text beyond",
+            1,
+            (33, 43),
+            1,
+        ),
         # fmt: on
     ],
 )
@@ -54,7 +63,7 @@ def test_when_regn_in_text_then_all_regns_found(
 def test_list_length():
     """
     Tests for static counts of each metadata lists defined
-    :return: True/False
+    :return: True/False.
     """
     assert len(InVehicleRegistrationRecognizer.in_old_states) == 3
     assert len(InVehicleRegistrationRecognizer.in_non_standard_state_or_ut) == 1

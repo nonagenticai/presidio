@@ -1,9 +1,8 @@
 import pytest
-
 from presidio_image_redactor.entities import InvalidParamError
 from presidio_image_redactor.entities.api_request_convertor import (
-    get_json_data,
     color_fill_string_to_value,
+    get_json_data,
 )
 
 
@@ -40,7 +39,9 @@ def test_given_empty_json_params_then_we_send_default_color_fill():
     [({"color_fill": "1"}, 1), ({"color_fill": "1, 0, 1"}, (1, 0, 1))],
     # fmt: on
 )
-def test_given_json_params_then_we_extract_properly_color_fill(json_params, expected_result):
+def test_given_json_params_then_we_extract_properly_color_fill(
+    json_params, expected_result
+):
     assert color_fill_string_to_value(json_params) == expected_result
 
 
@@ -50,7 +51,9 @@ def test_given_json_params_then_we_extract_properly_color_fill(json_params, expe
     [({"color_fill": "1, 0, 1, 0"}, "1, 0, 1, 0"), ({"color_fill": "1, 0"}, "1, 0")],
     # fmt: on
 )
-def test_given_json_params_then_we_fail_to_extract_properly_color_fill(json_params, data):
+def test_given_json_params_then_we_fail_to_extract_properly_color_fill(
+    json_params, data
+):
     with pytest.raises(InvalidParamError, match=f"Invalid color fill '{data}'"):
         color_fill_string_to_value(json_params)
 

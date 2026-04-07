@@ -22,14 +22,14 @@
 
 # COMMAND ----------
 
+import os
+
+import pandas as pd
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
+from pyspark.sql.functions import col, input_file_name, pandas_udf, regexp_replace
 from pyspark.sql.types import StringType
-from pyspark.sql.functions import input_file_name, regexp_replace
-from pyspark.sql.functions import col, pandas_udf
-import pandas as pd
-import os
 
 dbutils.widgets.dropdown(
     "file_format", "text", ["text", "csv"], "Input File Format (csv/text)"

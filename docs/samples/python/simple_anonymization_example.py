@@ -1,8 +1,9 @@
+import json
+from pprint import pprint
+
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
-from pprint import pprint
-import json
 
 text_to_anonymize = "His name is Tom and his phone number is 212-555-5555"
 

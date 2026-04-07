@@ -76,7 +76,7 @@ class Server:
                     context=req_data.context,
                     allow_list=req_data.allow_list,
                     allow_list_match=req_data.allow_list_match,
-                    regex_flags=req_data.regex_flags
+                    regex_flags=req_data.regex_flags,
                 )
 
                 return Response(
@@ -135,9 +135,11 @@ class Server:
         def http_exception(e):
             return jsonify(error=e.description), e.code
 
-def create_app(): # noqa
+
+def create_app():  # noqa
     server = Server()
     return server.app
+
 
 if __name__ == "__main__":
     app = create_app()

@@ -2,9 +2,7 @@ import re
 from typing import List
 
 import pytest
-
-from presidio_analyzer import Pattern, RecognizerResult
-from presidio_analyzer import PatternRecognizer
+from presidio_analyzer import Pattern, PatternRecognizer, RecognizerResult
 
 from tests import assert_result
 
@@ -209,13 +207,14 @@ def test_empty_deny_list_raises_value_error():
 )
 def test_global_regex_flag_deny_list_returns_right_result(global_flag, expected_len):
     deny_list = ["MrS", "mR"]
-    text = "Mrs. smith \n\n" \
-           "and Mr. Jones were sitting in the room."
+    text = "Mrs. smith \n\nand Mr. Jones were sitting in the room."
 
-    recognizer_ignore_case = PatternRecognizer(supported_entity="TITLE",
-                                               name="TitlesRecognizer",
-                                               deny_list=deny_list,
-                                               global_regex_flags=global_flag)
+    recognizer_ignore_case = PatternRecognizer(
+        supported_entity="TITLE",
+        name="TitlesRecognizer",
+        deny_list=deny_list,
+        global_regex_flags=global_flag,
+    )
 
     results = recognizer_ignore_case.analyze(text=text, entities=["TITLE"])
     assert len(results) == expected_len

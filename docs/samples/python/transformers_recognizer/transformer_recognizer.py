@@ -1,26 +1,25 @@
 import copy
 import logging
-from typing import Optional, List
+from typing import List, Optional
 
 import torch
 from presidio_analyzer import (
-    RecognizerResult,
-    EntityRecognizer,
     AnalysisExplanation,
+    EntityRecognizer,
+    RecognizerResult,
 )
 from presidio_analyzer.nlp_engine import NlpArtifacts
 
 from .configuration import BERT_DEID_CONFIGURATION
 
-
 logger = logging.getLogger("presidio-analyzer")
 
 try:
     from transformers import (
-        AutoTokenizer,
         AutoModelForTokenClassification,
-        pipeline,
+        AutoTokenizer,
         TokenClassificationPipeline,
+        pipeline,
     )
 
 except ImportError:
@@ -33,7 +32,7 @@ class TransformersRecognizer(EntityRecognizer):
     The class loads models hosted on HuggingFace - https://huggingface.co/
     and loads the model and tokenizer into a TokenClassification pipeline.
     Samples are split into short text chunks, ideally shorter than max_length input_ids of the individual model,
-    to avoid truncation by the Tokenizer and loss of information
+    to avoid truncation by the Tokenizer and loss of information.
 
     A configuration object should be maintained for each dataset-model combination and translate
     entities names into a standardized view. A sample of a configuration file is attached in
@@ -71,9 +70,7 @@ class TransformersRecognizer(EntityRecognizer):
         supported_entities: Optional[List[str]] = None,
     ):
         if not supported_entities:
-            supported_entities = BERT_DEID_CONFIGURATION[
-                "PRESIDIO_SUPPORTED_ENTITIES"
-            ]
+            supported_entities = BERT_DEID_CONFIGURATION["PRESIDIO_SUPPORTED_ENTITIES"]
         super().__init__(
             supported_entities=supported_entities,
             name=f"Transformers model {model_path}",
@@ -130,7 +127,7 @@ class TransformersRecognizer(EntityRecognizer):
         self._load_pipeline()
 
     def _load_pipeline(self) -> None:
-        """Initialize NER transformers pipeline using the model_path provided"""
+        """Initialize NER transformers pipeline using the model_path provided."""
 
         logging.debug(f"Initializing NER pipeline using {self.model_path} path")
         device = 0 if torch.cuda.is_available() else -1
@@ -177,7 +174,9 @@ class TransformersRecognizer(EntityRecognizer):
                 continue
 
             if res["entity_group"] == self.id_entity_name:
-                print(f"ID entity found, multiplying score by {self.id_score_reduction}")
+                print(
+                    f"ID entity found, multiplying score by {self.id_score_reduction}"
+                )
                 res["score"] = res["score"] * self.id_score_reduction
 
             textual_explanation = self.default_explanation.format(res["entity_group"])
@@ -195,7 +194,7 @@ class TransformersRecognizer(EntityRecognizer):
         input_length: int, chunk_length: int, overlap_length: int
     ) -> List[List]:
         """The function calculates chunks of text with size chunk_length. Each chunk has overlap_length number of
-        words to create context and continuity for the model
+        words to create context and continuity for the model.
 
         :param input_length: Length of input_ids for a given text
         :type input_length: int
@@ -244,7 +243,7 @@ class TransformersRecognizer(EntityRecognizer):
             predictions = list()
             chunk_indexes = TransformersRecognizer.split_text_to_word_chunks(
                 text_length, self.chunk_length, self.text_overlap_length
-                )
+            )
 
             # iterate over text chunks and run inference
             for chunk_start, chunk_end in chunk_indexes:
@@ -269,7 +268,7 @@ class TransformersRecognizer(EntityRecognizer):
     def _convert_to_recognizer_result(
         prediction_result: dict, explanation: AnalysisExplanation
     ) -> RecognizerResult:
-        """The method parses NER model predictions into a RecognizerResult format to enable down the stream analysis
+        """The method parses NER model predictions into a RecognizerResult format to enable down the stream analysis.
 
         :param prediction_result: A single example of entity prediction
         :type prediction_result: dict
@@ -301,7 +300,7 @@ class TransformersRecognizer(EntityRecognizer):
         :param explanation: Explanation string
         :param pattern: Regex pattern used
         :return Structured explanation and scores of a NER model prediction
-        :rtype: AnalysisExplanation
+        :rtype: AnalysisExplanation.
         """
         explanation = AnalysisExplanation(
             recognizer=self.__class__.__name__,
@@ -315,7 +314,7 @@ class TransformersRecognizer(EntityRecognizer):
         """The function validates the predicted label is identified by Presidio
         and maps the string into a Presidio representation
         :param label: Predicted label by the model
-        :return: Returns the adjusted entity name
+        :return: Returns the adjusted entity name.
         """
 
         # convert model label to presidio label
@@ -335,16 +334,15 @@ class TransformersRecognizer(EntityRecognizer):
 
 
 if __name__ == "__main__":
-
+    import spacy
     from presidio_analyzer import AnalyzerEngine, RecognizerRegistry
     from presidio_analyzer.nlp_engine import NlpEngineProvider
-    import spacy
 
     model_path = "obi/deid_roberta_i2b2"
-    supported_entities = BERT_DEID_CONFIGURATION.get(
-        "PRESIDIO_SUPPORTED_ENTITIES")
-    transformers_recognizer = TransformersRecognizer(model_path=model_path,
-                                                     supported_entities=supported_entities)
+    supported_entities = BERT_DEID_CONFIGURATION.get("PRESIDIO_SUPPORTED_ENTITIES")
+    transformers_recognizer = TransformersRecognizer(
+        model_path=model_path, supported_entities=supported_entities
+    )
 
     # This would download a large (~500Mb) model on the first run
     transformers_recognizer.load_transformer(**BERT_DEID_CONFIGURATION)
@@ -368,12 +366,14 @@ if __name__ == "__main__":
     analyzer = AnalyzerEngine(registry=registry, nlp_engine=nlp_engine)
 
     sample = "My name is John and I live in NY"
-    results = analyzer.analyze(sample, language="en",
-                               return_decision_process=True,
-                               )
+    results = analyzer.analyze(
+        sample,
+        language="en",
+        return_decision_process=True,
+    )
     print("Found the following entities:")
     for result in results:
-        print(result, '----', sample[result.start:result.end])
+        print(result, "----", sample[result.start : result.end])
 
     # Found the following entities:
     # type: PERSON, start: 11, end: 15, score: 1.0 ---- John

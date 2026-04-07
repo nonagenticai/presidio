@@ -1,9 +1,8 @@
+import logging
 from collections import namedtuple
 from typing import Optional
 
-import openai
-from openai import OpenAI, AzureOpenAI
-import logging
+from openai import AzureOpenAI, OpenAI
 
 logger = logging.getLogger("presidio-streamlit")
 
@@ -62,14 +61,14 @@ def create_prompt(anonymized_text: str) -> str:
     d. Keep the formatting as close to the original as possible.
     e. If PII exists in the input, replace it with fake values in the output.
     f. Remove whitespace before and after the generated text
-    
+
     input: [[TEXT STARTS]] How do I change the limit on my credit card {{credit_card_number}}?[[TEXT ENDS]]
     output: How do I change the limit on my credit card 2539 3519 2345 1555?
     input: [[TEXT STARTS]]<PERSON> was the chief science officer at <ORGANIZATION>.[[TEXT ENDS]]
     output: Katherine Buckjov was the chief science officer at NASA.
     input: [[TEXT STARTS]]Cameroon lives in <LOCATION>.[[TEXT ENDS]]
     output: Vladimir lives in Moscow.
-    
+
     input: [[TEXT STARTS]]{anonymized_text}[[TEXT ENDS]]
     output:"""
     return prompt

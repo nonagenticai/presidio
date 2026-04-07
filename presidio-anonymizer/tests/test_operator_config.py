@@ -1,5 +1,4 @@
 import pytest
-
 from presidio_anonymizer.entities import InvalidParamError, OperatorConfig
 
 
@@ -46,9 +45,7 @@ def test_given_two_different_entities_then_we_verify_they_are_equal(anonymizer_c
 @pytest.mark.parametrize(
     # fmt: off
     "class_name",
-    [
-        "hash", "mask", "redact", "replace"
-    ],
+    ["hash", "mask", "redact", "replace"],
     # fmt: on
 )
 def test_given_json_then_anonymizer_config_is_created_properly(class_name):

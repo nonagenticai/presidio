@@ -1,7 +1,7 @@
 import pytest
+from presidio_analyzer.predefined_recognizers import InPanRecognizer
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers import InPanRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -18,12 +18,17 @@ def entities():
     "text, expected_len, expected_position, expected_score",
     [
         # fmt: off
-        ("AAASA1111R", 1, (0,10), 0.1) ,
+        ("AAASA1111R", 1, (0, 10), 0.1),
         ("ABCPD1234Z", 1, (0, 10), 0.5),
         ("ABCND1234Z", 1, (0, 10), 0.1),
-        ("A1111DFSFS", 1, (0,10),0.01),
-        ("ABCD1234",0,(),(),),
-        ("My PAN number is ABBPM4567S with a lot of text beyond it", 1, (17,27),.5),
+        ("A1111DFSFS", 1, (0, 10), 0.01),
+        (
+            "ABCD1234",
+            0,
+            (),
+            (),
+        ),
+        ("My PAN number is ABBPM4567S with a lot of text beyond it", 1, (17, 27), 0.5),
         # fmt: on
     ],
 )

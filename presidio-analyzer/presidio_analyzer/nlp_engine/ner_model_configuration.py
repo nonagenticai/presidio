@@ -67,12 +67,12 @@ class NerModelConfiguration:
             self.model_to_presidio_entity_mapping = MODEL_TO_PRESIDIO_ENTITY_MAPPING
         if self.low_score_entity_names is None:
             logger.warning(
-                "low_score_entity_names is missing from configuration, " "using default"
+                "low_score_entity_names is missing from configuration, using default"
             )
             self.low_score_entity_names = LOW_SCORE_ENTITY_NAMES
         if self.labels_to_ignore is None:
             logger.warning(
-                "labels_to_ignore is missing from configuration, " "using default"
+                "labels_to_ignore is missing from configuration, using default"
             )
             self.labels_to_ignore = {}
 

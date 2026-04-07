@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 from presidio_anonymizer.entities import OperatorConfig
-from presidio_structured import PandasAnalysisBuilder, JsonAnalysisBuilder
+from presidio_structured import JsonAnalysisBuilder, PandasAnalysisBuilder
 from presidio_structured.config import StructuredAnalysis
 
 
@@ -25,7 +25,11 @@ def sample_df():
 def sample_df_strategy():
     data = {
         "name": ["John Doe", "Jane Smith", "Alice Johnson"],
-        "email": ["john.doe@example.com", "jane.smith@example.com", "alice.johnson@example.com"],
+        "email": [
+            "john.doe@example.com",
+            "jane.smith@example.com",
+            "alice.johnson@example.com",
+        ],
         "city": ["Anytown", "Somewhere", "Elsewhere"],
         "state": ["CA", "TX", "NY"],
         "non_pii": ["reallynotpii", "reallynotapii", "reallynotapiiatall"],

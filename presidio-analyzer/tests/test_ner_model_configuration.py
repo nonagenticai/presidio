@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from presidio_analyzer.nlp_engine import NerModelConfiguration
 
 
@@ -54,4 +53,3 @@ def test_from_dict_wrong_types(ner_model_configuration_dict, key, value):
     new_config[key] = value
     with pytest.raises(ValueError):
         NerModelConfiguration.from_dict(new_config)
-

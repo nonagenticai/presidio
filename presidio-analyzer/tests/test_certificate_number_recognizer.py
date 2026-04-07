@@ -1,7 +1,9 @@
 import pytest
+from presidio_analyzer.predefined_recognizers.medical_license_recognizer import (
+    MedicalLicenseRecognizer,
+)
 
 from tests import assert_result
-from presidio_analyzer.predefined_recognizers.medical_license_recognizer import MedicalLicenseRecognizer
 
 
 @pytest.fixture(scope="module")
@@ -18,11 +20,39 @@ def entities():
     "text, expected_len, expected_scores, expected_res",
     [
         # fmt: off
-        ("GL0285191 EU4488929", 2, (), ((0, 9),(10,19),),),
-        ("K92993548", 1, (), ((0, 9),),),
-        ("my certificate number is: BB1388568", 1, (), ((26,35),),),
-        ("The DEA number is  BG8207031", 0, (), (),),
-        ("123 456\n789", 0, (), (),),
+        (
+            "GL0285191 EU4488929",
+            2,
+            (),
+            (
+                (0, 9),
+                (10, 19),
+            ),
+        ),
+        (
+            "K92993548",
+            1,
+            (),
+            ((0, 9),),
+        ),
+        (
+            "my certificate number is: BB1388568",
+            1,
+            (),
+            ((26, 35),),
+        ),
+        (
+            "The DEA number is  BG8207031",
+            0,
+            (),
+            (),
+        ),
+        (
+            "123 456\n789",
+            0,
+            (),
+            (),
+        ),
         # fmt: on
     ],
 )

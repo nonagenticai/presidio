@@ -12,8 +12,7 @@ STANFORD_COFIGURATION = {
         "ZIP",
         "PROFESSION",
         "USERNAME",
-        "ID"
-
+        "ID",
     ],
     "LABELS_TO_IGNORE": ["O"],
     "DEFAULT_EXPLANATION": "Identified as {} by the StanfordAIMI/stanford-deidentifier-base NER model",
@@ -57,7 +56,7 @@ STANFORD_COFIGURATION = {
     "CHUNK_OVERLAP_SIZE": 40,
     "CHUNK_SIZE": 600,
     "ID_SCORE_MULTIPLIER": 0.4,
-    "ID_ENTITY_NAME": "ID"
+    "ID_ENTITY_NAME": "ID",
 }
 
 
@@ -73,7 +72,7 @@ BERT_DEID_CONFIGURATION = {
         "ZIP",
         "PROFESSION",
         "USERNAME",
-        "ID"
+        "ID",
     ],
     "DEFAULT_MODEL_PATH": "obi/deid_roberta_i2b2",
     "LABELS_TO_IGNORE": ["O"],
@@ -118,5 +117,5 @@ BERT_DEID_CONFIGURATION = {
     "CHUNK_OVERLAP_SIZE": 40,
     "CHUNK_SIZE": 600,
     "ID_SCORE_MULTIPLIER": 0.4,
-    "ID_ENTITY_NAME": "ID"
+    "ID_ENTITY_NAME": "ID",
 }

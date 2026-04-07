@@ -15,7 +15,7 @@ def allow_failure(engine_builder: Callable) -> Callable:
     def _allow_failure():
         try:
             engine = engine_builder()
-        except ValueError as e:
+        except ValueError:
             pytest.skip(reason="Could not set up engine, skipping test")
         return engine
 

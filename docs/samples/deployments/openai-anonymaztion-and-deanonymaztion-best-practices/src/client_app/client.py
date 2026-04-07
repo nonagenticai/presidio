@@ -4,12 +4,13 @@ load_dotenv()
 
 import argparse
 import os
+
 import requests
 from openai import AzureOpenAI
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Input, Label, RichLog
 from textual.containers import Horizontal, Vertical
+from textual.widgets import Input, Label, RichLog
 
 
 def anonymize(text: str, language: str, session_id: str = None):
@@ -97,7 +98,9 @@ class InputApp(App):
             with Vertical(classes="column"):
                 yield Label("LLM view")
                 yield Input(
-                    placeholder="Enter text..." if self._mode == 'manual' else "use --mode manual to chat on behalf of the LLM",
+                    placeholder="Enter text..."
+                    if self._mode == "manual"
+                    else "use --mode manual to chat on behalf of the LLM",
                     id="llm_input",
                     disabled=True,
                 )
