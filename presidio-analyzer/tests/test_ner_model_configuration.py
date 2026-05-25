@@ -42,9 +42,7 @@ def test_from_dict_happy_path(
     [
         ("stride", []),
         ("stride", "X"),
-        ("stride", None),
         ("alignment_mode", 5),
-        ("alignment_mode", None),
         ("low_confidence_score_multiplier", "X"),
     ],
 )

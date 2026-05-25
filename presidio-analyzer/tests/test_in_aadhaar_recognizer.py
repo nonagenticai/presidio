@@ -5,12 +5,12 @@ from tests import assert_result
 
 
 @pytest.fixture(scope="module")
-def recognizer():
+def recognizer() -> InAadhaarRecognizer:
     return InAadhaarRecognizer()
 
 
 @pytest.fixture(scope="module")
-def entities():
+def entities() -> list[str]:
     return ["IN_AADHAAR"]
 
 
@@ -37,7 +37,7 @@ def test_when_aadhaar_in_text_then_all_aadhaars_found(
     expected_score,
     recognizer,
     entities,
-):
+) -> None:
     results = recognizer.analyze(text, entities)
     print(results)
 
@@ -87,7 +87,7 @@ verhoeff_test_set = [
 
 
 @pytest.mark.parametrize("input_number, is_verhoeff", verhoeff_test_set)
-def test_is_verhoeff(input_number, is_verhoeff):
+def test_is_verhoeff(input_number, is_verhoeff) -> None:
     """
     Test to assert verhoeff number validation based on checksum from base class.
 

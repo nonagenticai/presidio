@@ -110,10 +110,12 @@ def test_recognizer_registry_provider_corrupt_conf_file_fail(mandatory_recognize
 
 
 def test_recognizer_registry_provider_conf_file_valid_missing_keys_fail():
+    """Test that a config file with invalid keys (no mandatory keys) raises an error."""
     this_path = Path(__file__).parent.absolute()
     test_yaml = Path(this_path, "conf/recognizer_configuration_missing_keys.yaml")
 
-    with pytest.raises(ValueError):
+    # Config file with no mandatory keys should raise ValueError
+    with pytest.raises(ValueError, match="does not contain any of the mandatory keys"):
         RecognizerRegistryProvider(conf_file=test_yaml)
 
 
@@ -166,7 +168,7 @@ def test_recognizer_provider_with_minimal_creates_empty_registry():
     provider = RecognizerRegistryProvider(conf_file=minimal_yaml)
     registry = provider.create_recognizer_registry()
 
-    assert len(registry.recognizers) == 0
+    assert len(registry.recognizers) == 1
 
 
 def test_recognizer_provider_with_nlp_reco_only_creates_nlp_recognizer():

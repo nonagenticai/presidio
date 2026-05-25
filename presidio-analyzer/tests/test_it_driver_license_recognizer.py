@@ -5,12 +5,12 @@ from tests import assert_result_within_score_range
 
 
 @pytest.fixture(scope="module")
-def recognizer():
+def recognizer() -> ItDriverLicenseRecognizer:
     return ItDriverLicenseRecognizer()
 
 
 @pytest.fixture(scope="module")
-def entities():
+def entities() -> list[str]:
     return ["IT_DRIVER_LICENSE"]
 
 
@@ -63,7 +63,7 @@ def test_when_driver_licenses_in_text_then_all_it_driver_licenses_found(
     recognizer,
     entities,
     max_score,
-):
+) -> None:
     results = recognizer.analyze(text, entities)
     assert len(results) == expected_len
     for res, (st_pos, fn_pos), (st_score, fn_score) in zip(

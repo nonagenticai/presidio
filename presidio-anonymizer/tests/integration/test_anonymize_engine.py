@@ -156,7 +156,7 @@ def test_given_intersecting_the_same_entities_then_we_anonymize_correctly():
 
 @pytest.mark.parametrize(
     # fmt: off
-    "hash_type,result",
+    "hash_type,expected_hash_length",
     [
         (
             "sha256",
@@ -196,7 +196,7 @@ def test_given_intersecting_the_same_entities_then_we_anonymize_correctly():
     ],
     # fmt: on
 )
-def test_given_hash_then_we_anonymize_correctly(hash_type, result):
+def test_given_hash_then_we_anonymize_correctly(hash_type, expected_hash_length):
     text = "hello world, my name is Jane Doe. My number is: 034453334"
     params = {}
     if hash_type:
@@ -208,7 +208,167 @@ def test_given_hash_then_we_anonymize_correctly(hash_type, result):
         RecognizerResult(start=29, end=32, score=0.6, entity_type="LAST_NAME"),
         RecognizerResult(start=24, end=32, score=0.8, entity_type="NAME"),
     ]
-    run_engine_and_validate(text, anonymizer_config, analyzer_results, result)
+    
+    engine = AnonymizerEngine()
+    result = engine.anonymize(text, analyzer_results, anonymizer_config)
+    
+    # Verify the structure
+    assert len(result.items) == 2  # NAME and PHONE_NUMBER (merged duplicates)
+    
+    # Verify hash lengths
+    for item in result.items:
+        assert len(item.text) == expected_hash_length
+        assert item.operator == "hash"
+        # Verify it's a valid hex string
+        assert all(c in '0123456789abcdef' for c in item.text)
+        # Verify it's not the original text
+        assert item.text.lower() not in text.lower()
+    
+    # Verify that "Jane Doe" was hashed to the same value
+    # (there should be only one NAME entity due to merging)
+    name_items = [item for item in result.items if item.entity_type == "NAME"]
+    assert len(name_items) == 1
+
+
+def test_when_hash_without_salt_then_different_hashes_per_entity():
+    """Test that hash operator produces different hashes for each entity when no salt provided."""
+    text = "My name is Jane Doe and Jane Doe number is: 034453334"
+    anonymizer_config = {"DEFAULT": OperatorConfig("hash", {})}
+    analyzer_results = [
+        RecognizerResult(start=11, end=19, score=0.8, entity_type="NAME"),  # First "Jane Doe"
+        RecognizerResult(start=24, end=32, score=0.8, entity_type="NAME"),  # Second "Jane Doe"
+        RecognizerResult(start=44, end=53, score=0.95, entity_type="PHONE_NUMBER"),
+    ]
+    
+    engine = AnonymizerEngine()
+    result = engine.anonymize(text, analyzer_results, anonymizer_config)
+    
+    # Extract the hashed values
+    hashed_names = [item.text for item in result.items if item.entity_type == "NAME"]
+    
+    # Each entity gets a different hash (no within-call consistency without user salt)
+    assert len(hashed_names) == 2
+    assert hashed_names[0] != hashed_names[1]
+
+
+def test_when_hash_with_user_salt_then_same_values_get_same_hash():
+    """Test that user-provided salt produces consistent hashes for same values."""
+    text = "My name is Jane Doe and Jane Doe called"
+    user_salt = "my_consistent_salt"
+    anonymizer_config = {"DEFAULT": OperatorConfig("hash", {"salt": user_salt})}
+    analyzer_results = [
+        RecognizerResult(start=11, end=19, score=0.8, entity_type="NAME"),  # First "Jane Doe"
+        RecognizerResult(start=24, end=32, score=0.8, entity_type="NAME"),  # Second "Jane Doe"
+    ]
+    
+    engine = AnonymizerEngine()
+    result = engine.anonymize(text, analyzer_results, anonymizer_config)
+    
+    # Extract the hashed values
+    hashed_names = [item.text for item in result.items if item.entity_type == "NAME"]
+    
+    # With user salt, same value gets same hash (referential integrity)
+    assert len(hashed_names) == 2
+    assert hashed_names[0] == hashed_names[1]
+
+
+def test_when_hash_with_different_sessions_then_different_hashes():
+    """Test that hash operator produces different hashes across different anonymization sessions."""
+    text = "My name is Jane Doe"
+    anonymizer_config = {"DEFAULT": OperatorConfig("hash", {})}
+    analyzer_results = [
+        RecognizerResult(start=11, end=19, score=0.8, entity_type="NAME"),
+    ]
+    
+    engine = AnonymizerEngine()
+    
+    # Run anonymization twice
+    result1 = engine.anonymize(text, analyzer_results, anonymizer_config)
+    result2 = engine.anonymize(text, analyzer_results, anonymizer_config)
+    
+    # Hashes should be different (different salts in different sessions)
+    hash1 = result1.items[0].text
+    hash2 = result2.items[0].text
+    assert hash1 != hash2
+
+
+def test_when_hash_with_user_provided_salt_then_hash_is_reproducible():
+    """Test that user-provided salt produces reproducible hashes across sessions."""
+    text = "My name is Jane Doe"
+    user_salt = "my_consistent_salt"
+    anonymizer_config = {"DEFAULT": OperatorConfig("hash", {"salt": user_salt})}
+    analyzer_results = [
+        RecognizerResult(start=11, end=19, score=0.8, entity_type="NAME"),
+    ]
+    
+    engine = AnonymizerEngine()
+    
+    # Run anonymization twice with same user salt
+    result1 = engine.anonymize(text, analyzer_results, anonymizer_config)
+    result2 = engine.anonymize(text, analyzer_results, anonymizer_config)
+    
+    # Hashes should be the same (same user-provided salt)
+    hash1 = result1.items[0].text
+    hash2 = result2.items[0].text
+    assert hash1 == hash2
+
+
+@pytest.mark.parametrize(
+    "text, salt, hash_type, expected_hash",
+    [
+        # fmt: off
+        # SHA256 known-answer tests with specific salt
+        (
+            "123456",
+            b"test_salt_16byte",  # 16 bytes exactly
+            "sha256",
+            "31ac5824179e43275be4f75b10886a915b8ffbe4238786dd17e2cc23325d6e47",
+        ),
+        (
+            "Jane Doe",
+            b"my_secure_salt16",  # 16 bytes exactly
+            "sha256",
+            "4180ab6f00d4379f01e57fc87593247f05fe2a3e3ad7b2b223d41d593ff3374e",
+        ),
+        # SHA512 known-answer tests with specific salt
+        (
+            "123456",
+            b"test_salt_16byte",
+            "sha512",
+            "3a19179a550de9c20ff6c99d8dfd43e819835d4981fd972ac1280b393cd79357"
+            "6386cafd7a955d0802760bc3169609c25f8bbf0e6b3c93c7a44ebadc223f1fa6",
+        ),
+        (
+            "sensitive_data",
+            b"0123456789abcdef",  # 16 bytes exactly
+            "sha512",
+            "0acd60e620b6894a99ed05d481bab628f0c3cabb3f4b37f9c8c5c2ba2cc06d4b"
+            "09656c589761018cefcef8bc81b2a7ace5b4803a91e997376f4a2559e0418640",
+        ),
+        # fmt: on
+    ],
+)
+def test_hash_with_known_salt_produces_expected_output(text, salt, hash_type, expected_hash):
+    """Test that hashing with a known salt produces expected deterministic output."""
+    from presidio_anonymizer import AnonymizerEngine
+    
+    params = {"hash_type": hash_type, "salt": salt}
+    anonymizer_config = {"DEFAULT": OperatorConfig("hash", params)}
+    
+    # Create a simple analyzer result for the entire text
+    analyzer_results = [
+        RecognizerResult(start=0, end=len(text), score=0.9, entity_type="TEST"),
+    ]
+    
+    engine = AnonymizerEngine()
+    result = engine.anonymize(text, analyzer_results, anonymizer_config)
+    
+    # The hash should match the expected value
+    assert result.items[0].text == expected_hash
+    
+    # Verify it's reproducible
+    result2 = engine.anonymize(text, analyzer_results, anonymizer_config)
+    assert result2.items[0].text == expected_hash
 
 
 def run_engine_and_validate(

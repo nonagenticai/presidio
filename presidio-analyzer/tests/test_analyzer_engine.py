@@ -458,7 +458,7 @@ def test_when_entities_is_none_all_recognizers_loaded_then_return_all_fields(
 def test_when_analyze_then_apptracer_has_value(
     loaded_registry, unit_test_guid, spacy_nlp_engine
 ):
-    text = "My name is Bart Simpson, and Credit card: 4095-2609-9393-4932,  my phone is 425 8829090"  # noqa E501
+    text = "My name is Bart Simpson, and Credit card: 4095-2609-9393-4932,  my phone is 425 8829090"  # noqa: E501
     language = "en"
     entities = ["CREDIT_CARD", "PHONE_NUMBER", "PERSON"]
     app_tracer_mock = AppTracerMock(enable_decision_process=True)
@@ -955,3 +955,28 @@ def test_when_multiple_nameless_recognizers_context_is_correct(spacy_nlp_engine)
 
     for recognizer_result in recognizer_results:
         assert recognizer_result.score > 0.3
+
+
+def test_when_regex_allow_list_times_out_then_result_is_kept(loaded_analyzer_engine):
+    """Test that a timed-out allow list regex keeps the result (conservative behavior)."""
+    text = "bing.com is his favorite website"
+
+    with patch(
+        "presidio_analyzer.analyzer_engine.REGEX_TIMEOUT_SECONDS", 0.001
+    ):
+        with patch(
+            "presidio_analyzer.analyzer_engine.re.compile"
+        ) as mock_compile:
+            mock_compiled = mock_compile.return_value
+            mock_compiled.search.side_effect = TimeoutError("regex timed out")
+
+            results = loaded_analyzer_engine.analyze(
+                text=text,
+                language="en",
+                allow_list=["bing"],
+                allow_list_match="regex",
+            )
+
+    # Result should be kept on timeout (not filtered out)
+    assert any(r.entity_type == "URL" for r in results)
+
